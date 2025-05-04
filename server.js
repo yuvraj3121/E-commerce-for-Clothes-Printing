@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
-
+const productRoutes = require('./routes/productRoutes');
 const app = express();
 app.use(express.json());
 
@@ -14,6 +14,7 @@ mongoose.connect('mongodb://localhost:27017/printwear', {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
 
 // Start server
 const PORT = 5000;
