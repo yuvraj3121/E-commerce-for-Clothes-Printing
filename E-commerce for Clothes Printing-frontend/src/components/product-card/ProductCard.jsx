@@ -38,5 +38,4 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
     </div>
   );
 };
-
 export default ProductCard;

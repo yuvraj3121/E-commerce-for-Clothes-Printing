@@ -36,5 +36,4 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
     </div>
   );
 };
-
 export default ProductGrid;

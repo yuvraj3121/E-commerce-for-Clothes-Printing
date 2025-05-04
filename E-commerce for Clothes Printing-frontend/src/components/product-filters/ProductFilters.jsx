@@ -38,5 +38,4 @@ const ProductFilters = () => {
     </div>
   );
 };
-
 export default ProductFilters;

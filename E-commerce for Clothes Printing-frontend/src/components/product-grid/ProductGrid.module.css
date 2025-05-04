@@ -53,6 +53,7 @@
     }
   }
   
+  
   @media (max-width: 576px) {
     .printoProductsContainer {
       grid-template-columns: repeat(2, 1fr);

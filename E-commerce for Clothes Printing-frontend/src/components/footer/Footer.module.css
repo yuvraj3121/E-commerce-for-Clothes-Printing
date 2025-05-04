@@ -102,6 +102,7 @@
     }
   }
   
+  
   @media (max-width: 576px) {
     .printoFooterSections {
       grid-template-columns: 1fr;

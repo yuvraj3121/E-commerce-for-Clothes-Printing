@@ -79,6 +79,7 @@
     border-color: #2c3e50;
   }
   
+  
   @media (max-width: 992px) {
     .printoFilters {
       width: 100%;

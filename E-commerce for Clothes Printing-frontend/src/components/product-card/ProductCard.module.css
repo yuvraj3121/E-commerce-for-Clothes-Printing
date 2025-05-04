@@ -124,6 +124,7 @@
     transition: all 0.3s ease;
   }
   
+  
   .printoAddToCartBtn:hover {
     background-color: #e74c3c;
   }
