@@ -1,0 +1,140 @@
+.cartPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .emptyCart {
+    text-align: center;
+    padding: 40px 0;
+  }
+  
+  .continueShopping {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #2c3e50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .continueShopping:hover {
+    background-color: #e74c3c;
+  }
+  
+  .cartContainer {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+  }
+  
+  .cartItems {
+    flex: 2;
+  }
+  
+  .cartItem {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+  
+  .itemImage {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .itemDetails {
+    flex: 1;
+  }
+  
+  .itemDetails h3 {
+    margin: 0 0 10px 0;
+  }
+  
+  .itemControls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  
+  .quantityControl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .quantityControl button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    background: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .removeBtn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .cartSummary {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    height: fit-content;
+  }
+  
+  .summaryRow {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+  }
+  
+  .totalPrice {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .checkoutBtn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+  
+  .checkoutBtn:hover {
+    background-color: #e74c3c;
+  }
+  
+  @media (max-width: 768px) {
+    .cartContainer {
+      flex-direction: column;
+    }
+    
+    .cartItem {
+      flex-direction: column;
+    }
+    
+    .itemControls {
+      align-items: flex-start;
+      margin-top: 15px;
+    }
+  }

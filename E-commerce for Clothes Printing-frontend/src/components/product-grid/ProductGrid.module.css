@@ -1,0 +1,61 @@
+.printoProductGrid {
+    flex: 1;
+  }
+  
+  .printoSortOptions {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #bdc3c7;
+  }
+  
+  .printoSortOptions span {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .printoSortSelect {
+    padding: 8px 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .printoProductsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .printoLoadingSpinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }
+  
+  .printoSpinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #bdc3c7;
+    border-top-color: #2c3e50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  
+  @media (max-width: 576px) {
+    .printoProductsContainer {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }

@@ -1,0 +1,18 @@
+.printoHomePage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .printoMainContent {
+    flex: 1;
+    padding: 30px 0;
+  }
+  
+  
+  .printoContainer {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
