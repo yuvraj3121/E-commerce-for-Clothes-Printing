@@ -1,0 +1,68 @@
+.mern-home-container {
+    background: url('https://example.com/fashion-banner.jpg') no-repeat center center; /* Add a fashion-themed background image */
+    background-size: cover; /* Cover the entire container */
+    color: #ffffff;
+    text-align: center;
+    padding: 4rem 2rem; /* Slightly increase padding for a spacious look */
+    border-radius: 20px; /* Rounded corners for a soft, modern look */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+    max-width: 900px;
+    margin: 3rem auto; /* Center the container */
+    font-family: 'Playfair Display', serif; /* Elegant font for a fashion look */
+    overflow: hidden; /* Ensures nothing overflows */
+    position: relative; /* Prepare for decorative elements */
+}
+
+.mern-home-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)); /* Gradient overlay for text readability */
+    z-index: 1;
+}
+
+.mern-home-container h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Stronger shadow for the heading */
+    letter-spacing: 2px; /* Slightly spaced-out letters for elegance */
+    z-index: 2;
+    position: relative;
+}
+
+.mern-home-container p {
+    font-size: 1.4rem;
+    margin-top: 0;
+    color: rgba(255, 255, 255, 0.9); /* Lighter text color */
+    line-height: 2; /* Increase line height for readability */
+    z-index: 2;
+    position: relative;
+}
+
+.mern-home-container button {
+    padding: 1rem 2rem;
+    margin-top: 2rem;
+    background: linear-gradient(to right, #ff9a8b, #ff6a88); /* Button with a vibrant gradient */
+    border: none;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px; /* Rounded button for a modern look */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 2;
+    position: relative;
+}
+
+.mern-home-container button:hover {
+    transform: translateY(-5px); /* Button lifts on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+}
+
+.mern-home-container button:focus {
+    outline: none;
+    background: linear-gradient(to right, #ff6a88, #ff9a8b); /* Reverse gradient on focus */
+}

@@ -1,0 +1,94 @@
+.mern-login-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: linear-gradient(to bottom, #f3f4f6, #ffffff); /* Subtle gradient for a clean, modern look */
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Elevated shadow for depth */
+    font-family: 'Poppins', sans-serif; /* Modern and elegant font */
+}
+
+.mern-login-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #34495e;
+    font-size: 1.8rem; /* Larger font for a bold look */
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.mern-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; /* Increased spacing for a cleaner layout */
+}
+
+.mern-login-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mern-login-form-group label {
+    font-weight: 600; /* Bolder label text */
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.mern-login-form-group input {
+    padding: 0.9rem; /* Increased padding for a premium feel */
+    border: 1px solid #ccc; /* Softer border color */
+    border-radius: 6px; /* Slightly more rounded corners */
+    font-size: 1rem;
+    background-color: #f9f9f9; /* Light background for inputs */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mern-login-form-group input:focus {
+    border-color: #3498db; /* Highlighted border on focus */
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* Subtle glow effect */
+    outline: none;
+}
+
+.mern-login-submit-btn {
+    padding: 0.9rem;
+    background: linear-gradient(to right, #1e8449, #2ecc71); /* Vibrant gradient button */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Rounded corners for buttons */
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slight shadow for depth */
+}
+
+.mern-login-submit-btn:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+    background: linear-gradient(to right, #27ae60, #2ecc71); /* Subtle gradient shift */
+}
+
+.mern-login-submit-btn:active {
+    transform: scale(0.98); /* Slight shrink effect on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+}
+
+.mern-signup-link {
+    text-align: center;
+    margin-top: 1.5rem; /* Slightly more spacing for better layout */
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.mern-signup-link a {
+    color: #3498db;
+    font-weight: 600; /* Slightly bolder link text */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.mern-signup-link a:hover {
+    color: #1f618d; /* Darker blue on hover */
+    text-decoration: underline;
+}

@@ -1,0 +1,85 @@
+.mern-navbar {
+    background: linear-gradient(90deg, #f78ca0, #f9748f); /* Gradient background inspired by fashion tones */
+    padding: 1rem 2rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow for elegance */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.mern-navbar:hover {
+    transform: translateY(-5px); /* Slight upward animation on hover */
+    background: linear-gradient(90deg, #f9748f, #f78ca0); /* Reverse gradient for hover effect */
+}
+
+.mern-navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mern-navbar-logo {
+    color: #ffffff;
+    font-size: 2rem; /* Slightly larger font */
+    font-weight: bold;
+    text-decoration: none;
+    letter-spacing: 2px; /* Wide letter-spacing for a bold statement */
+    text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Stronger shadow for emphasis */
+    transition: transform 0.3s ease-in-out, color 0.3s;
+}
+
+.mern-navbar-logo:hover {
+    transform: scale(1.2); /* Enlarges more prominently on hover */
+    color: #ffe2e6; /* Softer pastel color on hover */
+}
+
+.mern-navbar-links {
+    display: flex;
+    gap: 2rem; /* Increased spacing for a more luxurious layout */
+}
+
+.mern-navbar-link {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.8rem 1.6rem; /* Enhanced padding for a premium feel */
+    border-radius: 50px; /* Fully rounded pill design */
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.3); /* Frosted glass effect */
+    transition: all 0.4s ease-in-out;
+    backdrop-filter: blur(10px); /* Adds frosted glass blur effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.mern-navbar-link:hover {
+    background: rgba(255, 255, 255, 0.6); /* Brightens on hover */
+    color: #2a2a2a; /* Darker text for contrast on hover */
+    transform: scale(1.1); /* Slight enlargement on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+.mern-navbar-button {
+    background: linear-gradient(90deg, #ff6a88, #ff9a8b); /* Vibrant gradient button */
+    color: #ffffff;
+    border: none;
+    padding: 0.8rem 1.6rem; /* Increased padding for a more luxurious look */
+    border-radius: 50px; /* Fully rounded button for a modern design */
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow for prominence */
+}
+
+.mern-navbar-button:hover {
+    background: linear-gradient(90deg, #ff9a8b, #ff6a88); /* Reverse gradient for hover effect */
+    transform: translateY(-3px); /* Slight lift on hover */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+.mern-navbar-button:active {
+    transform: scale(0.95); /* Slight shrink on click */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
