@@ -26,7 +26,7 @@ const Header = ({ cartCount }) => {
           
           <div className={styles.printoCartContainer}>
             <Link to="/cart" className={styles.printoCartBtn}>
-              <i className="fas fa-shopping-cart"></i> Add to Card
+              <i className="fas fa-shopping-cart"></i> Cart
               {cartCount > 0 && (
                 <span className={styles.printoCartCount}>{cartCount}</span>
               )}
