@@ -1,0 +1,109 @@
+.printoFooter {
+    background-color: #f8f9fa;
+    padding: 50px 0 20px;
+  }
+  
+  .printoFooterContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  
+  .printoFooterSections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .printoFooterSection h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  .printoFooterSection ul {
+    list-style: none;
+  }
+  
+  .printoFooterSection li {
+    margin-bottom: 10px;
+  }
+  
+  .printoFooterSection a {
+    color: #95a5a6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+  
+  .printoFooterSection a:hover {
+    color: #e74c3c;
+  }
+  
+  .printoSocialIcons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .printoSocialIcons a {
+    color: #2c3e50;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+  
+  .printoSocialIcons a:hover {
+    color: #e74c3c;
+  }
+  
+  .printoPaymentMethods {
+    display: flex;
+    gap: 15px;
+    font-size: 24px;
+    color: #95a5a6;
+    margin-bottom: 20px;
+  }
+  
+  .printoFooterBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #bdc3c7;
+    font-size: 14px;
+    color: #95a5a6;
+  }
+  
+  .printoLegalLinks {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .printoLegalLinks a {
+    color: #95a5a6;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .printoLegalLinks a:hover {
+    color: #e74c3c;
+  }
+  
+  @media (max-width: 768px) {
+    .printoFooterSections {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .printoFooterBottom {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .printoFooterSections {
+      grid-template-columns: 1fr;
+    }
+  }
