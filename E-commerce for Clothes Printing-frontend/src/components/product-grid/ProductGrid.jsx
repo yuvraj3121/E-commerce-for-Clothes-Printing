@@ -1,11 +1,11 @@
-import React from 'react';
-import ProductCard from '../product-card/ProductCard';
-import styles from './ProductGrid.module.css';
+import React from "react";
+import ProductCard from "../product-card/ProductCard";
+import styles from "./ProductGrid.module.css";
 
 const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
   return (
     <div className={styles.printoProductGrid}>
-      <div className={styles.printoSortOptions}>
+      {/* <div className={styles.printoSortOptions}>
         <span>Sort By:</span>
         <select className={styles.printoSortSelect}>
           <option>Popularity</option>
@@ -14,7 +14,7 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
           <option>Newest First</option>
           <option>Customer Rating</option>
         </select>
-      </div>
+      </div> */}
 
       {loading ? (
         <div className={styles.printoLoadingSpinner}>
@@ -23,8 +23,8 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
         </div>
       ) : (
         <div className={styles.printoProductsContainer}>
-          {products.map(product => (
-            <ProductCard 
+          {products.map((product) => (
+            <ProductCard
               key={product.id}
               product={product}
               onAddToCart={onAddToCart}
