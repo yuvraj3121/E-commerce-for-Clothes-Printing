@@ -14,10 +14,15 @@ export const AuthProvider = ({ children }) => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
-          const res = await axios.get("http://localhost:5000/api/auth/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setUser(res.data);
+          const res = await axios.get(
+            "http://localhost:8000/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+
+          console.log(res.data);
         }
       } catch (err) {
         localStorage.removeItem("token");
@@ -52,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    navigate("/login");
   };
 
   return (

@@ -1,10 +1,11 @@
-import connectDB from "./dataBase/index.DB.js";
 import dotenv from "dotenv";
-import { app } from "./app.js";
 
 dotenv.config({
   path: "./.env",
 });
+
+import connectDB from "./dataBase/index.DB.js";
+import { app } from "./app.js";
 
 connectDB()
   .then(() => {

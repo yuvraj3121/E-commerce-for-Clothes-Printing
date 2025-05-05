@@ -1,5 +1,4 @@
 import { User } from "../models/user.model.js";
-import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
 
 const signUpUser = async (req, res) => {
@@ -53,7 +52,7 @@ const loginUser = async (req, res) => {
 
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
 
-    const isPasswordvalid = await bcrypt.compare(password, user.password);
+    const isPasswordvalid = user && (await user.comparePassword(password));
     if (!isPasswordvalid)
       return res.status(400).json({ error: "Invalid credentials" });
 
@@ -73,4 +72,17 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { signUpUser, loginUser };
+const getUserProfile = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId).select("-password");
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching user profile" });
+  }
+};
+
+export { signUpUser, loginUser, getUserProfile };
