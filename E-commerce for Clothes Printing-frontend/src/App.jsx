@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Cart from "./pages/Cart";
 import "./App.css";
 import Product from "./pages/Product";
+import AccountSettings from "./pages/AccountSettings"; // Import the AccountSettings component
 
 function App() {
   return (
@@ -16,8 +17,10 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/product" element={<Product />} />
+        <Route path="/account-settings" element={<AccountSettings />} /> {/* Add this line */}
       </Routes>
     </div>
   );
 }
+
 export default App;
