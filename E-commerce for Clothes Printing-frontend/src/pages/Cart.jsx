@@ -16,13 +16,10 @@ const Cart = ({}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log(user);
+  // console.log(user);
 
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return cartItems.reduce((total, item) => total + item.price, 0);
   };
 
   const { cartItems } = useSelector((state) => state.cart);
@@ -83,45 +80,22 @@ const Cart = ({}) => {
                 {cartItems.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.productImage[0].url}
+                      alt={item.productName}
                       className={styles.itemImage}
                     />
                     <div className={styles.itemDetails}>
-                      <h3>{item.name}</h3>
+                      <h3>{item.productName}</h3>
                       <p>Color: {item.color}</p>
-                      <p>Size: {item.size}</p>
+                      {item.sizes.map((size) => (
+                        <p key={size.size}>
+                          {size.size}: {size.quantity}
+                        </p>
+                      ))}
+                      <p>Quantity: {item.quantity}</p>
                       <p>Price: ₹{item.price}</p>
                     </div>
                     <div className={styles.itemControls}>
-                      <div className={styles.quantityControl}>
-                        <button
-                          onClick={() =>
-                            dispatch(
-                              updateQuantity({
-                                id: item.id,
-                                quantity: item.quantity - 1,
-                              })
-                            )
-                          }
-                          disabled={item.quantity <= 1}
-                        >
-                          -
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            dispatch(
-                              updateQuantity({
-                                id: item.id,
-                                quantity: item.quantity + 1,
-                              })
-                            )
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
                       <button
                         onClick={() => dispatch(removeFromCart(item.id))}
                         className={styles.removeBtn}

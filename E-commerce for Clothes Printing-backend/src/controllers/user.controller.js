@@ -63,7 +63,9 @@ const loginUser = async (req, res) => {
       user: {
         id: user._id,
         userName: user.userName,
+        fullName: user.fullName,
         email: user.email,
+        phoneNumber: user.phoneNumber,
       },
       token,
     });
@@ -85,4 +87,42 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export { signUpUser, loginUser, getUserProfile };
+const updateUserProfile = async (req, res) => {
+  const { userName, fullName, phoneNumber, email, newPassword } = req.body;
+
+  if (!userName || !fullName || !phoneNumber || !email) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.userName = userName;
+    user.fullName = fullName;
+    user.phoneNumber = phoneNumber;
+    user.email = email;
+
+    if (newPassword) {
+      user.password = newPassword;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: "User updated successfully",
+      user: {
+        id: user._id,
+        userName: user.userName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error updating user." });
+  }
+};
+
+export { signUpUser, loginUser, getUserProfile, updateUserProfile };

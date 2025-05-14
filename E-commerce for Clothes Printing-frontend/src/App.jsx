@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Cart from "./pages/Cart";
 import "./App.css";
 import Product from "./pages/Product";
+import Customization from "./pages/Customization";
+import AccountSettings from "./pages/AccountSettings";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/product" element={<Product />} />
+        <Route path="/customization" element={<Customization />} />
+        <Route path="/account-settings" element={<AccountSettings />} />
       </Routes>
     </div>
   );

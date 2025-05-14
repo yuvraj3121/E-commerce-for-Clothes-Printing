@@ -8,7 +8,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // console.log(product);
+  // console.log(product.image[0].url);
 
   const handleclick = () => {
     dispatch(setSelectedProduct(product));
@@ -18,7 +18,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
   return (
     <div className={styles.printoProductCard} onClick={() => handleclick()}>
       <div className={styles.printoProductImage}>
-        <img src={product.image} alt={product.name} />
+        <img src={product.image[0].url} alt={product.name} />
         <button
           className={styles.printoWishlistIcon}
           onClick={() => onToggleWishlist(product.id)}

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           );
           setUser(res.data.user);
 
-          console.log(res.data);
+          // console.log(res.data);
         }
       } catch (err) {
         localStorage.removeItem("token");
@@ -60,8 +60,30 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
+  const updateProfile = async (userData) => {
+    const token = localStorage.getItem("token");
+    // console.log(token);
+    const res = await axios.patch(
+      "http://localhost:8000/api/user/updateProfile",
+
+      {
+        userName: userData.userName,
+        fullName: userData.fullName,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        password: userData.password || "",
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    setUser(res.data.user);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, signup, logout, updateProfile }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

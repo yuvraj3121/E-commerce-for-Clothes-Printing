@@ -1,146 +1,209 @@
 .printoHeader {
-    background-color: #ffffff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    padding: 15px 0;
-  }
-  
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 15px 0;
+}
+
+.printoHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.printoLogo h1 {
+  color: #2c3e50;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.printoSearchBar {
+  display: flex;
+  width: 40%;
+}
+
+.printoSearchBar input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+.printoSearchBtn {
+  background-color: #2c3e50;
+  color: #ffffff;
+  border: none;
+  padding: 0 15px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.printoSearchBtn:hover {
+  background-color: #e74c3c;
+}
+
+.printoUserActions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.printoUserActions button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #2c3e50;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.printoUserActions button:hover {
+  color: #e74c3c;
+}
+
+.printoCartBtn {
+  position: relative;
+}
+
+.printoCartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #e74c3c;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.printoAuthContainer {
+  position: relative;
+}
+
+.printoAccountBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.printoAuthDropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  z-index: 1000;
+  padding: 10px 0;
+}
+
+.printoDropdownItem {
+  width: 100%;
+  padding: 8px 15px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.printoDropdownItem:hover {
+  background-color: #f5f5f5;
+  color: #e74c3c;
+}
+/* User Dropdown Styles */
+.printoUserDropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.printoUserGreeting {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.printoUserGreeting:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  text-align: left;
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdownItem svg {
+  font-size: 14px;
+}
+
+/* Make sure the cart and wishlist icons are properly aligned */
+.printoWishlistBtn,
+.printoCartBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 768px) {
   .printoHeaderContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
+    flex-direction: column;
+    gap: 15px;
   }
-  
-  .printoLogo h1 {
-    color: #2c3e50;
-    font-size: 28px;
-    font-weight: 700;
-  }
-  
+
   .printoSearchBar {
-    display: flex;
-    width: 40%;
-  }
-  
-  
-  .printoSearchBar input {
     width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px 0 0 4px;
-    font-size: 14px;
   }
-  
-  .printoSearchBtn {
-    background-color: #2c3e50;
-    color: #ffffff;
-    border: none;
-    padding: 0 15px;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .printoSearchBtn:hover {
-    background-color: #e74c3c;
-  }
-  
+
   .printoUserActions {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  
-  .printoUserActions button {
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: #2c3e50;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-  }
-  
-  .printoUserActions button:hover {
-    color: #e74c3c;
-  }
-  
-  .printoCartBtn {
-    position: relative;
-  }
-  
-  .printoCartCount {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #e74c3c;
-    color: #ffffff;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
+    width: 100%;
     justify-content: center;
   }
-  
-  .printoAuthContainer {
-    position: relative;
-  }
-  
-  .printoAccountBtn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .printoAuthDropdown {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-width: 150px;
-    z-index: 1000;
-    padding: 10px 0;
-  }
-  
-  .printoDropdownItem {
-    width: 100%;
-    padding: 8px 15px;
-    text-align: left;
-    background: none;
-    border: none;
-    color: #2c3e50;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .printoDropdownItem:hover {
-    background-color: #f5f5f5;
-    color: #e74c3c;
-  }
-  
-  @media (max-width: 768px) {
-    .printoHeaderContainer {
-      flex-direction: column;
-      gap: 15px;
-    }
-    
-    .printoSearchBar {
-      width: 100%;
-    }
-    
-    .printoUserActions {
-      width: 100%;
-      justify-content: center;
-    }
-  }
+}

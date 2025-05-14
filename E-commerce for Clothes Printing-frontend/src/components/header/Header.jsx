@@ -1,11 +1,42 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 import { AuthContext } from "../../context/AuthContext";
-import { FaSearch } from "react-icons/fa";
+import {
+  FaSearch,
+  FaUser,
+  FaShoppingCart,
+  FaHeart,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 const Header = ({ cartCount }) => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsDropdownOpen(false);
+  };
 
   return (
     <header className={styles.printoHeader}>
@@ -19,19 +50,18 @@ const Header = ({ cartCount }) => {
         <div className={styles.printoSearchBar}>
           <input type="text" placeholder="Search for t-shirts..." />
           <button className={styles.printoSearchBtn}>
-            <i className="fas fa-search"></i>
             <FaSearch />
           </button>
         </div>
 
         <div className={styles.printoUserActions}>
           <button className={styles.printoWishlistBtn}>
-            <i className="far fa-heart"></i>
+            <FaHeart />
           </button>
 
           <div className={styles.printoCartContainer}>
             <Link to="/cart" className={styles.printoCartBtn}>
-              <i className="fas fa-shopping-cart"></i> Cart
+              <FaShoppingCart /> Cart
               {cartCount > 0 && (
                 <span className={styles.printoCartCount}>{cartCount}</span>
               )}
@@ -41,7 +71,7 @@ const Header = ({ cartCount }) => {
           {!user ? (
             <div className={styles.printoAuthContainer}>
               <Link to="/login" className={styles.printoAuthLink}>
-                <i className="far fa-user"></i> Login
+                Login
               </Link>
               <span className={styles.printoAuthDivider}>|</span>
               <Link to="/signup" className={styles.printoAuthLink}>
@@ -49,8 +79,38 @@ const Header = ({ cartCount }) => {
               </Link>
             </div>
           ) : (
-            <div className={styles.printoUserGreeting}>
-              <span>Hello, {user.userName}</span>
+            <div className={styles.printoUserDropdown} ref={dropdownRef}>
+              <div
+                className={styles.printoUserGreeting}
+                onClick={toggleDropdown}
+              >
+                <span>Hello, {user.userName}</span>
+                {isDropdownOpen ? <FiChevronUp /> : <FiChevronDown />}
+              </div>
+              {isDropdownOpen && (
+                <div className={styles.dropdownMenu}>
+                  <Link
+                    to="/orders"
+                    className={styles.dropdownItem}
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    My Orders
+                  </Link>
+                  <Link
+                    to="/account-settings"
+                    className={styles.dropdownItem}
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Account Settings
+                  </Link>
+                  <button
+                    className={styles.dropdownItem}
+                    onClick={handleLogout}
+                  >
+                    <FaSignOutAlt /> Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
