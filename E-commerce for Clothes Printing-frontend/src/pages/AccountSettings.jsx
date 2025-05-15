@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import "./AccountSettings.css";
 import { useNavigate } from "react-router-dom";
+import { RiLockPasswordFill } from "react-icons/ri";
 
 const AccountSettings = () => {
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const AccountSettings = () => {
     email: user.email,
     phoneNumber: user.phoneNumber,
   });
+  const [passwordChange, setPasswordChange] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +37,17 @@ const AccountSettings = () => {
     console.log("Saved data:", userData);
   };
 
+  const handlePasswordSave = async (e) => {
+    e.preventDefault();
+    try {
+      setPasswordChange(!passwordChange);
+      alert("Password Updated Successfully.");
+    } catch (error) {
+      alert(error.response?.data?.message || "Password update failed");
+      console.log(error);
+    }
+  };
+
   const displayValue = (value) => {
     return value || "Not Specified";
   };
@@ -45,125 +60,120 @@ const AccountSettings = () => {
       >
         Home
       </button>
-      <h1 className="account-settings-title">Account Settings</h1>
+      <h1 className="account-settings-title">Account Details</h1>
 
-      <div className="account-settings-table">
-        <div className="table-row">
-          <div className="table-header">Username</div>
-          <div className="table-data">
-            {isEditing ? (
-              <input
-                type="text"
-                name="userName"
-                value={userData.userName}
-                onChange={handleInputChange}
-                className="edit-input"
-              />
-            ) : (
-              displayValue(userData.userName)
-            )}
+      <div>
+        <div className="account-settings-table">
+          <div className="table-row">
+            <div className="table-header">Username</div>
+            <div className="table-data">
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="userName"
+                  value={userData.userName}
+                  onChange={handleInputChange}
+                  className="edit-input"
+                />
+              ) : (
+                displayValue(userData.userName)
+              )}
+            </div>
+          </div>
+
+          <div className="table-row">
+            <div className="table-header">Fullname</div>
+            <div className="table-data">
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="fullName"
+                  value={userData.fullName}
+                  onChange={handleInputChange}
+                  className="edit-input"
+                />
+              ) : (
+                displayValue(userData.fullName)
+              )}
+            </div>
+          </div>
+
+          <div className="table-row">
+            <div className="table-header">Email</div>
+            <div className="table-data">
+              {isEditing ? (
+                <input
+                  type="email"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleInputChange}
+                  className="edit-input"
+                />
+              ) : (
+                displayValue(userData.email)
+              )}
+            </div>
+          </div>
+
+          <div className="table-row">
+            <div className="table-header">Phone</div>
+            <div className="table-data">
+              {isEditing ? (
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={userData.phoneNumber}
+                  onChange={handleInputChange}
+                  className="edit-input"
+                />
+              ) : (
+                displayValue(userData.phoneNumber)
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="table-row">
-          <div className="table-header">Fullname</div>
-          <div className="table-data">
-            {isEditing ? (
-              <input
-                type="text"
-                name="fullName"
-                value={userData.fullName}
-                onChange={handleInputChange}
-                className="edit-input"
-              />
-            ) : (
-              displayValue(userData.fullName)
-            )}
-          </div>
+        <div className="button-container">
+          {isEditing ? (
+            <button className="save-button" onClick={handleSave}>
+              Save Changes
+            </button>
+          ) : (
+            <button className="edit-button" onClick={() => setIsEditing(true)}>
+              Edit Profile
+            </button>
+          )}
         </div>
-
-        <div className="table-row">
-          <div className="table-header">Email</div>
-          <div className="table-data">
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={userData.email}
-                onChange={handleInputChange}
-                className="edit-input"
-              />
-            ) : (
-              displayValue(userData.email)
-            )}
-          </div>
-        </div>
-
-        <div className="table-row">
-          <div className="table-header">Phone</div>
-          <div className="table-data">
-            {isEditing ? (
-              <input
-                type="tel"
-                name="phoneNumber"
-                value={userData.phoneNumber}
-                onChange={handleInputChange}
-                className="edit-input"
-              />
-            ) : (
-              displayValue(userData.phoneNumber)
-            )}
-          </div>
-        </div>
-
-        {/* <div className="table-row">
-          <div className="table-header">Gender</div>
-          <div className="table-data">
-            {isEditing ? (
-              <select
-                name="gender"
-                value={userData.gender}
-                onChange={handleInputChange}
-                className="edit-input"
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            ) : (
-              displayValue(userData.gender)
-            )}
-          </div>
-        </div> */}
-
-        {/* <div className="table-row">
-          <div className="table-header">Date of Birth</div>
-          <div className="table-data">
-            {isEditing ? (
-              <input
-                type="date"
-                name="dob"
-                value={userData.dob}
-                onChange={handleInputChange}
-                className="edit-input"
-              />
-            ) : (
-              displayValue(userData.dob)
-            )}
-          </div>
-        </div> */}
       </div>
-
-      <div className="button-container">
-        {isEditing ? (
-          <button className="save-button" onClick={handleSave}>
-            Save Changes
-          </button>
-        ) : (
-          <button className="edit-button" onClick={() => setIsEditing(true)}>
-            Edit Profile
-          </button>
+      <div className="passwordDiv">
+        <button onClick={() => setPasswordChange(!passwordChange)}>
+          {passwordChange === false ? (
+            <div>
+              <RiLockPasswordFill />
+              Change Password
+            </div>
+          ) : (
+            <div>Cancel</div>
+          )}
+        </button>
+        {passwordChange && (
+          <div>
+            <label htmlFor="">Current Password:</label>
+            <input
+              type="text"
+              name="currentPassword"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <label htmlFor="">New Password</label>
+            <input
+              type="text"
+              name="newPassword"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button onClick={handlePasswordSave}>Save</button>
+          </div>
         )}
       </div>
     </div>

@@ -7,19 +7,29 @@ const createProduct = async (req, res) => {
     productName,
     category,
     price,
+    productImage,
+    frontDesignText,
+    backDesignText,
     printLocation,
     sizes,
     color,
     quantity,
   } = req.body;
 
-  if (!productName || !category || !price || !sizes || !color || !quantity) {
+  if (
+    !productName ||
+    !category ||
+    !price ||
+    !sizes ||
+    !color ||
+    !quantity ||
+    !productImage
+  ) {
     return res.status(400).json({ message: "All fields are required" });
   }
   console.log("2");
 
   let parsedSizes = sizes;
-
   if (typeof sizes === "string") {
     try {
       parsedSizes = JSON.parse(sizes);
@@ -27,21 +37,34 @@ const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Invalid JSON in sizes" });
     }
   }
+
+  let parsedProductImage = productImage;
+  if (typeof productImage === "string") {
+    try {
+      parsedProductImage = JSON.parse(productImage);
+    } catch (error) {
+      return res.status(400).json({ message: "Invalid JSON in productImage" });
+    }
+  }
+
+  let parsedPrintLocation = printLocation;
+  if (typeof printLocation === "string") {
+    try {
+      parsedPrintLocation = JSON.parse(printLocation);
+    } catch (error) {
+      return res.status(400).json({ message: "Invalid JSON in printLocation" });
+    }
+  }
+
   console.log("3");
 
-  const productImageLocalPath = req.files?.productImage?.[0]?.path;
-  const frontDesignLocalPath = req.files?.frontDesign?.[0]?.path;
-  const backDesignLocalPath = req.files?.backDesign?.[0]?.path;
+  const frontDesignImageLocalPath = req.files?.frontDesignImage?.[0]?.path;
+  const backDesignImageLocalPath = req.files?.backDesignImage?.[0]?.path;
   console.log("req.files:", req.files);
 
-  if (!productImageLocalPath) {
-    return res.status(400).json({ message: "Product image is required" });
-  }
   console.log("4");
-
-  const productImage = await uploadOnCloudinary(productImageLocalPath);
-  const frontDesign = await uploadOnCloudinary(frontDesignLocalPath);
-  const backDesign = await uploadOnCloudinary(backDesignLocalPath);
+  const frontDesignImage = await uploadOnCloudinary(frontDesignImageLocalPath);
+  const backDesignImage = await uploadOnCloudinary(backDesignImageLocalPath);
   console.log("5");
 
   try {
@@ -49,10 +72,12 @@ const createProduct = async (req, res) => {
       productName,
       category,
       price,
-      productImage: productImage.url || "",
-      frontDesign: frontDesign.url || "",
-      backDesign: backDesign.url || "",
-      printLocation,
+      productImage: parsedProductImage,
+      frontDesignImage: frontDesignImage?.url || "",
+      backDesignImage: backDesignImage?.url || "",
+      frontDesignText,
+      backDesignText,
+      printLocation: parsedPrintLocation,
       sizes: parsedSizes,
       color,
       quantity,

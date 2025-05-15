@@ -36,6 +36,9 @@
 }
 
 .leftDiv .arrow {
+  display: flex;
+  align-items: center;
+  height: 500px;
   opacity: 0;
 }
 

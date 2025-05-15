@@ -14,14 +14,22 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    productImage: {
+    productImage: [
+      {
+        side: { type: String, required: true },
+        url: { type: String, required: true },
+      },
+    ],
+    frontDesignImage: {
       type: String,
-      required: true,
     },
-    frontDesign: {
+    backDesignImage: {
       type: String,
     },
-    backDesign: {
+    frontDesignText: {
+      type: String,
+    },
+    backDesignText: {
       type: String,
     },
     printLocation: {

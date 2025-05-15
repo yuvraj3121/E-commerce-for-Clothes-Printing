@@ -43,7 +43,7 @@ const Header = ({ cartCount }) => {
       <div className={styles.printoHeaderContainer}>
         <div className={styles.printoLogo}>
           <Link to="/">
-            <h1>PrintWear</h1>
+            <h1>DesignDrip</h1>
           </Link>
         </div>
 
