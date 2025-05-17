@@ -9,6 +9,7 @@ import {
   incrementCartCount,
   decrementCartCount,
   updateQuantity,
+  setTotalAmount,
 } from "../features/cartSlice";
 
 const Cart = ({}) => {
@@ -29,34 +30,17 @@ const Cart = ({}) => {
   return (
     <>
       <button
-        className="homeBtn"
-        style={{
-          margin: "20px",
-          position: "absolute",
-          top: "10px",
-          left: "20px",
-          border: "1px solid black",
-          padding: "10px",
-          cursor: "pointer",
-          borderRadius: "5px",
-        }}
+        className="absolute top-2 left-5 border border-black px-4 py-2 rounded cursor-pointer bg-white hover:bg-gray-100"
         onClick={() => navigate("/")}
       >
         Home
       </button>
       {!user ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-          }}
-        >
+        <div className="flex items-center justify-center h-screen">
           <h1>
             Please{" "}
             <span
-              style={{ cursor: "pointer", color: "blue" }}
+              className="text-blue-600 cursor-pointer"
               onClick={() => navigate("/login")}
             >
               Login
@@ -64,41 +48,51 @@ const Cart = ({}) => {
           </h1>
         </div>
       ) : (
-        <div className={styles.cartPage}>
-          <h1>Your Shopping Cart</h1>
+        <div className="max-w-[1200px] mx-auto p-5">
+          <h1 className="text-2xl font-semibold mb-6">Your Shopping Cart</h1>
 
           {cartItems.length === 0 ? (
-            <div className={styles.emptyCart}>
-              <p>Your cart is empty</p>
-              <Link to="/" className={styles.continueShopping}>
+            <div className="text-center py-10">
+              <p className="mb-4">Your cart is empty</p>
+              <button
+                className="bg-gray-800 text-white px-6 py-2 rounded hover:bg-red-500"
+                onClick={() => navigate("/")}
+              >
                 Continue Shopping
-              </Link>
+              </button>
             </div>
           ) : (
-            <div className={styles.cartContainer}>
-              <div className={styles.cartItems}>
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1">
                 {cartItems.map((item) => (
-                  <div key={item.id} className={styles.cartItem}>
+                  <div
+                    key={item.id}
+                    className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"
+                  >
                     <img
                       src={item.productImage[0].url}
                       alt={item.productName}
-                      className={styles.itemImage}
+                      className="w-32 h-32 object-contain rounded"
                     />
-                    <div className={styles.itemDetails}>
-                      <h3>{item.productName}</h3>
-                      <p>Color: {item.color}</p>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-lg mb-1">
+                        {item.productName}
+                      </h3>
+                      <p className="text-sm">Color: {item.color}</p>
                       {item.sizes.map((size) => (
-                        <p key={size.size}>
+                        <p key={size.size} className="text-sm">
                           {size.size}: {size.quantity}
                         </p>
                       ))}
-                      <p>Quantity: {item.quantity}</p>
-                      <p>Price: ₹{item.price}</p>
+                      <p className="text-sm">Quantity: {item.quantity}</p>
+                      <p className="text-sm font-semibold">
+                        Price: ₹{item.price}
+                      </p>
                     </div>
-                    <div className={styles.itemControls}>
+                    <div className="flex flex-col items-end justify-between">
                       <button
                         onClick={() => dispatch(removeFromCart(item.id))}
-                        className={styles.removeBtn}
+                        className="text-red-500 underline hover:text-red-700 hover:bg-red-100"
                       >
                         Remove
                       </button>
@@ -106,24 +100,29 @@ const Cart = ({}) => {
                   </div>
                 ))}
               </div>
-
-              <div className={styles.cartSummary}>
-                <h2>Order Summary</h2>
-                <div className={styles.summaryRow}>
+              <div className="w-full md:w-1/3 border border-gray-200 rounded p-5 h-fit">
+                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                <div className="flex justify-between mb-2">
                   <span>Subtotal</span>
                   <span>₹{calculateTotal()}</span>
                 </div>
-                <div className={styles.summaryRow}>
+                <div className="flex justify-between mb-2">
                   <span>Shipping</span>
                   <span>FREE</span>
                 </div>
-                <div className={styles.summaryRow}>
+                <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className={styles.totalPrice}>₹{calculateTotal()}</span>
+                  <span>₹{calculateTotal()}</span>
                 </div>
-                <Link to="/checkout" className={styles.checkoutBtn}>
+                <button
+                  className="bg-gray-800 text-white w-full py-3 mt-5 rounded hover:bg-red-500"
+                  onClick={() => {
+                    navigate("/shippingDetails");
+                    dispatch(setTotalAmount(calculateTotal()));
+                  }}
+                >
                   Proceed to Checkout
-                </Link>
+                </button>
               </div>
             </div>
           )}

@@ -1,6 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import styles from "./Header.module.css";
 import { AuthContext } from "../../context/AuthContext";
 import {
   FaSearch,
@@ -39,75 +38,95 @@ const Header = ({ cartCount }) => {
   };
 
   return (
-    <header className={styles.printoHeader}>
-      <div className={styles.printoHeaderContainer}>
-        <div className={styles.printoLogo}>
-          <Link to="/">
-            <h1>DesignDrip</h1>
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="flex-shrink-0">
+          <Link to="/" className="text-2xl font-bold text-gray-900">
+            DesignDrip
           </Link>
         </div>
 
-        <div className={styles.printoSearchBar}>
-          <input type="text" placeholder="Search for t-shirts..." />
-          <button className={styles.printoSearchBtn}>
+        <div className="flex flex-1 max-w-lg mx-4">
+          <input
+            type="text"
+            placeholder="Search for t-shirts..."
+            className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <FaSearch />
           </button>
         </div>
 
-        <div className={styles.printoUserActions}>
-          <button className={styles.printoWishlistBtn}>
-            <FaHeart />
+        <div className="flex items-center space-x-4">
+          <button
+            aria-label="Wishlist"
+            className="p-2 rounded-full hover:bg-red-100 text-gray-600 hover:text-red-600 transition-colors"
+          >
+            <FaHeart className="text-xl" />
           </button>
 
-          <div className={styles.printoCartContainer}>
-            <Link to="/cart" className={styles.printoCartBtn}>
-              <FaShoppingCart /> Cart
+          <div>
+            <Link
+              to="/cart"
+              className="relative flex items-center space-x-1 text-gray-700 hover:text-blue-600 focus:outline-none"
+            >
+              <FaShoppingCart className="text-xl" />
+              <span>Cart</span>
               {cartCount > 0 && (
-                <span className={styles.printoCartCount}>{cartCount}</span>
+                <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                  {cartCount}
+                </span>
               )}
             </Link>
           </div>
 
           {!user ? (
-            <div className={styles.printoAuthContainer}>
-              <Link to="/login" className={styles.printoAuthLink}>
+            <div className="flex items-center space-x-2 text-gray-700">
+              <Link
+                to="/login"
+                className="hover:text-blue-600 focus:outline-none focus:underline"
+              >
                 Login
               </Link>
-              <span className={styles.printoAuthDivider}>|</span>
-              <Link to="/signup" className={styles.printoAuthLink}>
+              <span className="select-none">|</span>
+              <Link
+                to="/signup"
+                className="hover:text-blue-600 focus:outline-none focus:underline"
+              >
                 Sign Up
               </Link>
             </div>
           ) : (
-            <div className={styles.printoUserDropdown} ref={dropdownRef}>
-              <div
-                className={styles.printoUserGreeting}
+            <div className="relative" ref={dropdownRef}>
+              <button
                 onClick={toggleDropdown}
+                className="flex items-center space-x-1 p-2 rounded-md hover:bg-blue-100 text-gray-700 hover:text-blue-700 transition-colors"
               >
                 <span>Hello, {user.userName}</span>
                 {isDropdownOpen ? <FiChevronUp /> : <FiChevronDown />}
-              </div>
+              </button>
+
               {isDropdownOpen && (
-                <div className={styles.dropdownMenu}>
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                   <Link
                     to="/orders"
-                    className={styles.dropdownItem}
                     onClick={() => setIsDropdownOpen(false)}
+                    className="block px-4 py-2 text-gray-700 hover:bg-blue-100"
                   >
                     My Orders
                   </Link>
                   <Link
                     to="/account-settings"
-                    className={styles.dropdownItem}
                     onClick={() => setIsDropdownOpen(false)}
+                    className="block px-4 py-2 text-gray-700 hover:bg-blue-100"
                   >
                     Account Settings
                   </Link>
                   <button
-                    className={styles.dropdownItem}
                     onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 flex items-center space-x-2"
                   >
-                    <FaSignOutAlt /> Logout
+                    <FaSignOutAlt /> <span>Logout</span>
                   </button>
                 </div>
               )}
