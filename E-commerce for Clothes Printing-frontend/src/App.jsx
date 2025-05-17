@@ -14,6 +14,7 @@ import OrderReview from "./pages/OrderReview";
 import Payment from "./pages/payment";
 import Confirmation from "./pages/Confirmation";
 import Orders from "./pages/orders";
+import OrderDetails from "./pages/orderDetails";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/orderDetails" element={<OrderDetails />} />
       </Routes>
     </div>
   );

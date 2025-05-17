@@ -10,7 +10,7 @@ const Confirmation = () => {
   const dispatch = useDispatch();
   const [showConfetti, setShowConfetti] = useState(false);
   const { cartItems } = useSelector((state) => state.cart);
-  console.log("before", cartItems);
+  const { userDetails } = useSelector((state) => state.shippingDetails);
 
   useEffect(() => {
     setShowConfetti(true);
@@ -24,10 +24,15 @@ const Confirmation = () => {
       .replace(",", "");
 
     cartItems.map((item) =>
-      dispatch(addToOrders({ ...item, orderedOn: formattedDate }))
+      dispatch(
+        addToOrders({
+          ...item,
+          userDetails: userDetails,
+          orderedOn: formattedDate,
+        })
+      )
     );
     dispatch(clearCart());
-    console.log("after", cartItems);
   }, []);
 
   return (

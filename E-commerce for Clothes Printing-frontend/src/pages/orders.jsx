@@ -2,12 +2,15 @@ import React, { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { setSelectedOrder } from "../features/ordersSlice";
 
 const Orders = ({}) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { allOrders } = useSelector((state) => state.orders);
+  // console.log(allOrders);
 
   return (
     <>
@@ -67,7 +70,10 @@ const Orders = ({}) => {
                     <div className="flex-row ">
                       <p
                         className="w-max cursor-pointer hover:text-blue-400 hover:bg-blue-50"
-                        onClick={() => navigate("/orderDetails")}
+                        onClick={() => {
+                          navigate("/orderDetails");
+                          dispatch(setSelectedOrder(order));
+                        }}
                       >
                         Order details {" >"}
                       </p>
