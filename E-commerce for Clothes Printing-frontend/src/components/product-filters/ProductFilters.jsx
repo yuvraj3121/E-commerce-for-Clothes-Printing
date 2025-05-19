@@ -6,7 +6,6 @@ const ProductFilters = () => {
       <div>
         <h3 className="text-xl font-semibold mb-4 text-gray-800">Filter By</h3>
 
-        {/* Price Filter */}
         <div className="mb-6">
           <h4 className="text-md font-medium mb-2 text-gray-700">Price</h4>
           <input
@@ -22,7 +21,6 @@ const ProductFilters = () => {
           </div>
         </div>
 
-        {/* Color Filter */}
         <div className="mb-6">
           <h4 className="text-md font-medium mb-2 text-gray-700">Color</h4>
           <div className="flex flex-wrap gap-2">
@@ -46,7 +44,6 @@ const ProductFilters = () => {
           </div>
         </div>
 
-        {/* Size Filter */}
         <div>
           <h4 className="text-md font-medium mb-2 text-gray-700">Size</h4>
           <div className="flex flex-wrap gap-2">

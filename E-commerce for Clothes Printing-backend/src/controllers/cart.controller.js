@@ -56,4 +56,32 @@ const deleteCartItem = async (req, res) => {
   }
 };
 
-export { addToCart, getUserCart, deleteCartItem };
+const deleteUserCart = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const result = await Cart.deleteMany({ user: userId });
+
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "No cart items found for this user" });
+    }
+
+    res
+      .status(200)
+      .json({
+        message: "Cart items deleted successfully",
+        deletedCount: result.deletedCount,
+      });
+  } catch (error) {
+    console.error("Error deleting cart items:", error);
+    res.status(500).json({ message: "Server error while deleting cart items" });
+  }
+};
+
+export { addToCart, getUserCart, deleteCartItem, deleteUserCart };

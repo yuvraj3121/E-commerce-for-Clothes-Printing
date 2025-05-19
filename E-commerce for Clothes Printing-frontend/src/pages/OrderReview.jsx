@@ -1,19 +1,41 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 
 const OrderReview = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const { userDetails } = useSelector((state) => state.shippingDetails);
-  const { cartItems, totalAmount } = useSelector((state) => state.cart);
+  const { totalAmount } = useSelector((state) => state.cart);
+  const [cartItems, setCartItems] = useState([]);
   // console.log(userDetails);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/cart/userCart/${user._id}`
+        );
+        const items = res.data.map((cart) => ({
+          cartId: cart._id,
+          ...cart.product,
+        }));
+        setCartItems(items);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCartItems();
+  }, [user._id]);
 
   const handlePlaceOrder = () => {
     navigate("/payment");
   };
 
   const handleBack = () => {
-    navigate("/shipping");
+    navigate("/shippingDetails");
   };
 
   return (

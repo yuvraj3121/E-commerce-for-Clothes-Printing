@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const OrderDetails = () => {
   const { selectedOrder } = useSelector((state) => state.orders);
+  console.log(selectedOrder);
   const navigate = useNavigate();
 
   return (
@@ -41,7 +42,18 @@ const OrderDetails = () => {
           </div>
 
           <div className="bg-green-500 text-left p-4 mb-4">
-            <p>Delivered on</p>
+            <p>
+              Delivered on{" "}
+              {(() => {
+                const date = new Date(selectedOrder.orderedOn);
+                date.setDate(date.getDate() + 10);
+                return date.toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                });
+              })()}
+            </p>
           </div>
 
           <div className="mb-4 bg-gray-100 text-left p-5">

@@ -1,38 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToOrders } from "../features/ordersSlice.js";
 import { clearCart } from "../features/cartSlice.js";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 const Confirmation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useContext(AuthContext);
+  const [cartItems, setCartItems] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
   const { userDetails } = useSelector((state) => state.shippingDetails);
 
   useEffect(() => {
-    setShowConfetti(true);
-    const date = new Date();
-    const formattedDate = date
-      .toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-      .replace(",", "");
-
-    cartItems.map((item) =>
-      dispatch(
-        addToOrders({
-          ...item,
-          userDetails: userDetails,
-          orderedOn: formattedDate,
+    const init = async () => {
+      setShowConfetti(true);
+      const date = new Date();
+      const formattedDate = date
+        .toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
         })
-      )
-    );
-    dispatch(clearCart());
+        .replace(",", "");
+
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/cart/userCart/${user._id}`
+        );
+
+        const items = res.data.map((cart) => ({
+          cartId: cart._id,
+          ...cart.product,
+        }));
+
+        setCartItems(items);
+
+        items.forEach((item) => {
+          dispatch(
+            addToOrders({
+              ...item,
+              userDetails: userDetails,
+              orderedOn: formattedDate,
+            })
+          );
+        });
+
+        const productIds = items.map((item) => item._id);
+        await axios.post("http://localhost:8000/api/order/createOrder", {
+          customerId: user._id,
+          product: productIds,
+          deliveryAddress: userDetails,
+        });
+
+        await axios.delete(
+          `http://localhost:8000/api/cart/deleteUserCart/${user._id}`
+        );
+
+        dispatch(clearCart());
+      } catch (err) {
+        console.error("Error in order creation:", err);
+      }
+    };
+
+    init();
   }, []);
 
   return (

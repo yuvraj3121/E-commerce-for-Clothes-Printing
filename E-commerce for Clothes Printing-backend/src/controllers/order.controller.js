@@ -2,15 +2,15 @@ import { Order } from "../models/order.model.js";
 
 const createOrder = async (req, res) => {
   try {
-    const { customerId, productId, deliveryAddress } = req.body;
+    const { customerId, product, deliveryAddress } = req.body;
 
-    if (!customerId || !productId || !deliveryAddress) {
+    if (!customerId || !product || !deliveryAddress) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
     const newOrder = await Order.create({
       customer: customerId,
-      product: productId,
+      product: product,
       deliveryAddress,
     });
 
@@ -51,13 +51,11 @@ const getUserOrders = async (req, res) => {
       .populate("product")
       .sort({ createdAt: -1 });
 
-    res
-      .status(200)
-      .json({
-        message: "User orders fetched successfully.",
-        count: orders.length,
-        orders,
-      });
+    res.status(200).json({
+      message: "User orders fetched successfully.",
+      count: orders.length,
+      orders,
+    });
   } catch (error) {
     console.error("Error fetching user orders:", error);
     res.status(500).json({ message: "Failed to fetch user orders", error });

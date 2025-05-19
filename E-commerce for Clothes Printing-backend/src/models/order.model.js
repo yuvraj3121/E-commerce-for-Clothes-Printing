@@ -6,10 +6,12 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    product: {
-      type: Schema.Types.ObjectId,
-      ref: "userProduct",
-    },
+    product: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "userProduct",
+      },
+    ],
     deliveryAddress: {
       fullName: { type: String, required: true },
       email: { type: String, required: true },

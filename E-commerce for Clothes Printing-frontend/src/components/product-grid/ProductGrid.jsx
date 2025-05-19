@@ -3,11 +3,9 @@ import ProductCard from "../product-card/ProductCard";
 
 const categories = ["All", "T-Shirts", "Hoodies", "Jackets", "Caps"];
 
-// For now, reuse same products for all categories
 const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Group products by category (since you don't have different products yet, just reuse)
   const productsByCategory = {
     "T-Shirts": products,
     Hoodies: products,
@@ -17,7 +15,6 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
 
   return (
     <div className="p-4">
-      {/* Category Filter Buttons */}
       <div className="flex space-x-4 mb-6 overflow-x-auto">
         {categories.map((category) => (
           <button
@@ -35,7 +32,6 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
         ))}
       </div>
 
-      {/* Show all categories separately if "All" selected */}
       {loading ? (
         <div className="flex flex-col items-center space-y-2">
           <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-600"></div>
@@ -62,7 +58,6 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
             ))}
         </>
       ) : (
-        // Show only selected category products
         <>
           <h2 className="text-2xl font-semibold mb-4">{selectedCategory}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
