@@ -1,17 +1,17 @@
 import { Router } from "express";
 import {
-  createProduct,
-  getAllProducts,
-} from "../controllers/product.controller.js";
+  createUserProduct,
+  deleteUserProduct,
+} from "../controllers/userProduct.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
 router.post(
-  "/createProduct",
+  "/createUserProduct",
   upload.fields([
-    { name: "frontImage", maxCount: 1 },
-    { name: "backImage", maxCount: 1 },
+    { name: "frontDesignImage", maxCount: 1 },
+    { name: "backDesignImage", maxCount: 1 },
   ]),
   (err, req, res, next) => {
     if (err) {
@@ -21,8 +21,8 @@ router.post(
     }
     next();
   },
-  createProduct
+  createUserProduct
 );
-router.get("/allProduct", getAllProducts);
+router.delete("/deleteUserProduct/:id", deleteUserProduct);
 
 export default router;

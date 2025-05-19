@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
   {
     productName: {
       type: String,
@@ -20,37 +20,20 @@ const productSchema = new mongoose.Schema(
         url: { type: String, required: true },
       },
     ],
-    frontDesignImage: {
-      type: String,
-    },
-    backDesignImage: {
-      type: String,
-    },
-    frontDesignText: {
-      type: String,
-    },
-    backDesignText: {
-      type: String,
-    },
-    printLocation: {
-      type: [String],
-    },
     sizes: [
       {
-        size: { type: String, required: true },
-        quantity: { type: Number, required: true },
+        type: String,
+        required: true,
       },
     ],
-    color: {
-      type: String,
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-    },
+    colors: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export const Product = mongoose.model("Product", productSchema);
+export const Product = mongoose.model("Product", ProductSchema);

@@ -15,6 +15,8 @@ import Payment from "./pages/payment";
 import Confirmation from "./pages/Confirmation";
 import Orders from "./pages/orders";
 import OrderDetails from "./pages/orderDetails";
+import AdminDashboard from "./adminPages/adminHome";
+import AdminHome from "./adminPages/adminHome";
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orderDetails" element={<OrderDetails />} />
+        <Route path="/adminHome" element={<AdminHome />} />
       </Routes>
     </div>
   );

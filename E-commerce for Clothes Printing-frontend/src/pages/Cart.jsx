@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Cart.module.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,21 +11,58 @@ import {
   updateQuantity,
   setTotalAmount,
 } from "../features/cartSlice";
+import axios from "axios";
+import { TbArrowWaveLeftDown } from "react-icons/tb";
 
 const Cart = ({}) => {
   const { user } = useContext(AuthContext);
+  const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // console.log(user);
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/cart/userCart/${user._id}`
+        );
+        const items = res.data.map((cart) => ({
+          cartId: cart._id,
+          ...cart.product,
+        }));
+        setCartItems(items);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCartItems();
+  }, [user._id]);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price, 0);
   };
 
-  const { cartItems } = useSelector((state) => state.cart);
+  // const { cartItems } = useSelector((state) => state.cart);
 
   console.log(cartItems);
+
+  const handleRemove = async (productId, cartId) => {
+    // console.log(productId);
+    try {
+      const res = await axios.delete(
+        `http://localhost:8000/api/cart/removeCartItem/${cartId}`
+      );
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item.cartId !== cartId)
+      );
+
+      await axios.delete(
+        `http://localhost:8000/api/userProduct/deleteUserProduct/${productId}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -66,7 +103,7 @@ const Cart = ({}) => {
               <div className="flex-1">
                 {cartItems.map((item) => (
                   <div
-                    key={item.id}
+                    key={item._id}
                     className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"
                   >
                     <img
@@ -91,7 +128,7 @@ const Cart = ({}) => {
                     </div>
                     <div className="flex flex-col items-end justify-between">
                       <button
-                        onClick={() => dispatch(removeFromCart(item.id))}
+                        onClick={() => handleRemove(item._id, item.cartId)}
                         className="text-red-500 underline hover:text-red-700 hover:bg-red-100"
                       >
                         Remove

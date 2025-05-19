@@ -1,8 +1,11 @@
 import express from "express";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
+import userProductRoutes from "./routes/userProduct.route.js";
 import productRoutes from "./routes/product.route.js";
-import paymentRoutes from "./routes/payment.route.js";
+import orderRoutes from "./routes/order.route.js";
+import cartRoutes from "./routes/cart.route.js";
+// import paymentRoutes from "./routes/payment.route.js";
 
 const app = express();
 app.use(
@@ -14,7 +17,10 @@ app.use(
 app.use(express.json());
 
 app.use("/api/user", userRoutes);
+app.use("/api/userProduct", userProductRoutes);
 app.use("/api/product", productRoutes);
-app.use("/api/payment", paymentRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/cart", cartRoutes);
+// app.use("/api/payment", paymentRoutes);
 
 export { app };

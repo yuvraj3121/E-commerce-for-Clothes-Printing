@@ -28,7 +28,10 @@ const signUpUser = async (req, res) => {
       user: {
         id: user._id,
         userName: user.userName,
+        fullName: user.fullName,
         email: user.email,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
       },
       token,
     });
@@ -66,11 +69,12 @@ const loginUser = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         phoneNumber: user.phoneNumber,
+        role: user.role,
       },
       token,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error logging in" });
+    res.status(500).json({ error: error });
   }
 };
 
@@ -125,4 +129,24 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-export { signUpUser, loginUser, getUserProfile, updateUserProfile };
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "-password");
+
+    res.status(200).json({
+      message: "Users fetched successfully.",
+      count: users.length,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching users." });
+  }
+};
+
+export {
+  signUpUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+  getAllUsers,
+};
