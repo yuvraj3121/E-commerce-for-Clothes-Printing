@@ -34,13 +34,23 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post("http://localhost:8000/api/user/login", {
-      email,
-      password,
-    });
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data.user);
-    navigate("/");
+    try {
+      const res = await axios.post("http://localhost:8000/api/user/login", {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", res.data.token);
+      setUser(res.data.user);
+
+      if (res.data.user.role === "admin") {
+        navigate("/adminHome");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   const signup = async (userName, fullName, email, password, phoneNumber) => {

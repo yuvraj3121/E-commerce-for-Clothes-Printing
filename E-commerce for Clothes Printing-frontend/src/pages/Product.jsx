@@ -34,9 +34,9 @@ const Product = () => {
 
   let productData = {
     id: Date.now(),
-    productName: selectedProduct.name,
+    productName: selectedProduct.productName,
     category: selectedProduct.category,
-    productImage: selectedProduct.image,
+    productImage: selectedProduct.productImage,
     frontDesign: { url: frontDesignPreview, text: "" },
     backDesign: { url: backDesignPreview, text: "" },
     printLocation: [
@@ -168,10 +168,10 @@ const Product = () => {
             <img
               src={
                 prev
-                  ? selectedProduct.image[0].url
-                  : selectedProduct.image[1].url
+                  ? selectedProduct.productImage[0].url
+                  : selectedProduct.productImage[1].url
               }
-              alt={selectedProduct.name}
+              alt={selectedProduct.productName}
               className="w-full h-full object-contain rounded-lg border border-gray-300"
             />
 
@@ -182,7 +182,7 @@ const Product = () => {
 
           <div className="md:w-1/3 space-y-6">
             <h2 className="text-3xl font-semibold text-center text-gray-800">
-              {selectedProduct.name}
+              {selectedProduct.productName}
             </h2>
 
             <div className="text-xl font-semibold text-gray-700">

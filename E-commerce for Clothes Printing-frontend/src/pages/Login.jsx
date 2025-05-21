@@ -8,7 +8,7 @@ const Login = () => {
     password: "",
   });
 
-  const { login } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,18 +17,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      formData.email === "admin@DesignDrip.ac.in" &&
-      formData.password === "admin1234"
-    )
-      navigate("/adminHome");
-    else {
-      try {
-        await login(formData.email, formData.password);
-        navigate("/");
-      } catch (error) {
-        alert(error.response?.data?.message || "Login failed");
-      }
+    try {
+      await login(formData.email, formData.password);
+    } catch (error) {
+      alert(error.response?.data?.message || "Login failed");
     }
   };
 

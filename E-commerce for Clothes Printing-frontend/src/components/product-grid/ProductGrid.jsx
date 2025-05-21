@@ -1,17 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../product-card/ProductCard";
+import axios from "axios";
 
 const categories = ["All", "T-Shirts", "Hoodies", "Jackets", "Caps"];
 
 const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [allProduct, setAllProduct] = useState([]);
 
-  const productsByCategory = {
-    "T-Shirts": products,
-    Hoodies: products,
-    Jackets: products,
-    Caps: products,
-  };
+  useEffect(() => {
+    const fetchApiProduct = async () => {
+      try {
+        await axios
+          .get("http://localhost:8000/api/product/allProduct")
+          .then((res) => {
+            console.log(res.data.products);
+            setAllProduct(res.data.products);
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchApiProduct();
+  }, []);
+
+  const productsByCategory = allProduct.reduce((acc, product) => {
+    const category = product.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
 
   return (
     <div className="p-4">
@@ -45,9 +66,9 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
               <section key={category} className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4">{category}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {productsByCategory[category].map((product) => (
+                  {productsByCategory[category]?.map((product) => (
                     <ProductCard
-                      key={product.id}
+                      key={product._id}
                       product={product}
                       onAddToCart={onAddToCart}
                       onToggleWishlist={onToggleWishlist}
@@ -61,9 +82,9 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
         <>
           <h2 className="text-2xl font-semibold mb-4">{selectedCategory}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productsByCategory[selectedCategory].map((product) => (
+            {productsByCategory[selectedCategory]?.map((product) => (
               <ProductCard
-                key={product.id}
+                key={product._id}
                 product={product}
                 onAddToCart={onAddToCart}
                 onToggleWishlist={onToggleWishlist}

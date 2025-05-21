@@ -38,6 +38,8 @@ const createUserProduct = async (req, res) => {
     }
   }
 
+  // console.log(productImage);
+
   let parsedProductImage = productImage;
   if (typeof productImage === "string") {
     try {
@@ -55,19 +57,30 @@ const createUserProduct = async (req, res) => {
       return res.status(400).json({ message: "Invalid JSON in printLocation" });
     }
   }
+  const totalQuantity = parsedSizes.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+  // console.log(sizes);
 
   console.log("3");
 
   const frontDesignImageLocalPath = req.files?.frontDesignImage?.[0]?.path;
   const backDesignImageLocalPath = req.files?.backDesignImage?.[0]?.path;
-  console.log("req.files:", req.files);
-  console.log("front path:", req.files?.frontDesignImage?.[0]?.path);
-  console.log("back path:", req.files?.backDesignImage?.[0]?.path);
+  const customizedFrontImageLocalPath =
+    req.files?.customizedFrontImage?.[0]?.path;
+  const customizedBackImageLocalPath =
+    req.files?.customizedBackImage?.[0]?.path;
+  // console.log("req.files:", req.files);
+  // console.log("front path:", req.files?.frontDesignImage?.[0]?.path);
+  // console.log("back path:", req.files?.backDesignImage?.[0]?.path);
 
   console.log("4");
 
   let frontDesignImage = null;
   let backDesignImage = null;
+  let customizedFrontImage = null;
+  let customizedBackImage = null;
 
   if (frontDesignImageLocalPath) {
     frontDesignImage = await uploadOnCloudinary(frontDesignImageLocalPath);
@@ -75,22 +88,51 @@ const createUserProduct = async (req, res) => {
   if (backDesignImageLocalPath) {
     backDesignImage = await uploadOnCloudinary(backDesignImageLocalPath);
   }
+  if (customizedFrontImageLocalPath) {
+    customizedFrontImage = await uploadOnCloudinary(
+      customizedFrontImageLocalPath
+    );
+  }
+  if (customizedBackImageLocalPath) {
+    customizedBackImage = await uploadOnCloudinary(
+      customizedBackImageLocalPath
+    );
+  }
+
   console.log("5");
+  // console.log("Creating product with:", {
+  //   productName,
+  //   category,
+  //   price: Number(price),
+  //   productImage: parsedProductImage,
+  //   frontDesignImage: frontDesignImage?.url || "",
+  //   backDesignImage: backDesignImage?.url || "",
+  //   frontDesignText,
+  //   backDesignText,
+  //   customizedFrontImage: customizedFrontImage?.url || null,
+  //   customizedBackImage: customizedBackImage?.url || null,
+  //   printLocation: parsedPrintLocation,
+  //   sizes: parsedSizes,
+  //   color,
+  //   quantity: totalQuantity,
+  // });
 
   try {
     const newProduct = await userProduct.create({
       productName,
       category,
-      price,
+      price: Number(price),
       productImage: parsedProductImage,
       frontDesignImage: frontDesignImage?.url || "",
       backDesignImage: backDesignImage?.url || "",
       frontDesignText,
       backDesignText,
+      customizedFrontImage: customizedFrontImage?.url || null,
+      customizedBackImage: customizedBackImage?.url || null,
       printLocation: parsedPrintLocation,
       sizes: parsedSizes,
       color,
-      quantity,
+      quantity: totalQuantity,
     });
 
     res.status(201).json({
@@ -115,12 +157,10 @@ const deleteUserProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Product deleted successfully",
-        product: deletedProduct,
-      });
+    res.status(200).json({
+      message: "Product deleted successfully",
+      product: deletedProduct,
+    });
   } catch (error) {
     res
       .status(500)

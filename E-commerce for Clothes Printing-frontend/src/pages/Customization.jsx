@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { toPng } from "html-to-image";
 import download from "downloadjs";
 import {
@@ -10,8 +10,10 @@ import {
 } from "@dnd-kit/core";
 import "./Customization.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { batch, useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../features/cartSlice";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const DraggableDiv = ({
   id,
@@ -117,10 +119,10 @@ const DraggableDiv = ({
 };
 
 const Customization = () => {
+  const { user } = useContext(AuthContext);
   const { selectedProduct } = useSelector((state) => state.product);
-  // console.log(selectedProduct);
   let productData = selectedProduct;
-  // console.log(productData);
+  console.log(productData);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -152,6 +154,8 @@ const Customization = () => {
   const [backFontStyle, setBackFontStyle] = useState("Arial");
   const [frontTextColor, setFrontTextColor] = useState("#000000");
   const [backTextColor, setBackTextColor] = useState("#000000");
+  const [frontDesignFile, setFrontDesignFile] = useState(null);
+  const [backDesignFile, setBackDesignFile] = useState(null);
   const [sizes, setSize] = useState([
     { size: "S", quantity: 0 },
     { size: "M", quantity: 0 },
@@ -168,6 +172,7 @@ const Customization = () => {
   const handleFrontDesignUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setFrontDesignFile(file);
       setFrontDesign(URL.createObjectURL(file));
     } else {
       console.log("No file selected");
@@ -177,6 +182,7 @@ const Customization = () => {
   const handleBackDesignUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setBackDesignFile(file);
       setBackDesign(URL.createObjectURL(file));
     } else {
       console.log("No file selected");
@@ -301,18 +307,18 @@ const Customization = () => {
 
     const cartItem = {
       id: Date.now(),
-      productName: selectedProduct.name,
+      productName: selectedProduct.productName,
       category: selectedProduct.category,
       productImage: [
         {
           side: "Front",
           // url: URL.createObjectURL(frontImage) || selectedProduct.image[0].url,
-          url: selectedProduct.image[0].url,
+          url: selectedProduct.productImage[0].url,
         },
         {
           side: "Back",
           // url: URL.createObjectURL(backImage) || selectedProduct.image[1].url,
-          url: selectedProduct.image[1].url,
+          url: selectedProduct.productImage[1].url,
         },
       ],
       frontDesign: { url: frontDesign, text: frontText },
@@ -325,8 +331,53 @@ const Customization = () => {
 
     // console.log("Cart Item:", cartItem);
     dispatch(addToCart(cartItem));
-    alert("Added to cart!");
-    navigate("/");
+    // alert("Added to cart!");
+    // navigate("/");
+
+    const formData = new FormData();
+    formData.append("productName", productData.productName);
+    formData.append("category", productData.category);
+    formData.append("price", selectedProduct.price * totalQuantity);
+    formData.append("frontDesignText", frontText);
+    formData.append("backDesignText", backText);
+    formData.append("color", color);
+    formData.append("quantity", productData.quantity);
+    formData.append("printLocation", JSON.stringify(["front", "back"]));
+    formData.append("sizes", JSON.stringify(sizes));
+    formData.append("quantity", totalQuantity);
+    formData.append("productImage", JSON.stringify(productData.productImage));
+    if (frontDesignFile) {
+      formData.append("frontDesignImage", frontDesignFile);
+    }
+    if (backDesignFile) {
+      formData.append("backDesignImage", backDesignFile);
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/userProduct/createUserProduct",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(res.data);
+      const createdProduct = res.data.product;
+
+      await axios.post("http://localhost:8000/api/cart/addToCart", {
+        userId: user._id,
+        productId: createdProduct._id,
+      });
+
+      alert("Added to cart!");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      alert("Error adding to cart or creating product.");
+    }
   };
 
   return (
@@ -334,10 +385,10 @@ const Customization = () => {
       <div className="cus-leftDiv">
         <button onClick={() => navigate("/product")}>{"< "}Back</button>
         <div className="frontImg" onClick={() => setSide("front")}>
-          <img src={selectedProduct.image[0].url} alt="T-shirt"></img>
+          <img src={selectedProduct.productImage[0].url} alt="T-shirt"></img>
         </div>
         <div className="backImg" onClick={() => setSide("back")}>
-          <img src={selectedProduct.image[1].url} alt="T-shirt"></img>
+          <img src={selectedProduct.productImage[1].url} alt="T-shirt"></img>
         </div>
       </div>
       <div className="cus-rightDiv">
@@ -348,7 +399,7 @@ const Customization = () => {
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div ref={frontCanvasRef} id="mainImg" className="mainImgDiv">
               <img
-                src={selectedProduct.image[0].url}
+                src={selectedProduct.productImage[0].url}
                 alt="T-shirt"
                 style={{
                   width: "100%",
@@ -454,12 +505,13 @@ const Customization = () => {
                   onChange={(e) => setFrontTextColor(e.target.value)}
                 />
               </div>
-              <button
+              {/* <button
+                className="bg-green-200 hover:bg-green-600 p-1"
                 onClick={handleFrontDownload}
                 style={{ marginTop: "10px" }}
               >
                 Download Design
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -471,7 +523,7 @@ const Customization = () => {
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div ref={backCanvasRef} id="mainImg" className="mainImgDiv">
               <img
-                src={selectedProduct.image[1].url}
+                src={selectedProduct.productImage[1].url}
                 alt="T-shirt"
                 style={{
                   width: "100%",
@@ -576,17 +628,18 @@ const Customization = () => {
                   onChange={(e) => setBackTextColor(e.target.value)}
                 />
               </div>
-              <button
+              {/* <button
+                className="bg-green-200 hover:bg-green-600 p-1"
                 onClick={handleBackDownload}
                 style={{ marginTop: "10px" }}
               >
                 Download Design
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
       </div>
-      <div className="centerDiv">
+      <div className="centerDiv ">
         <div style={{ marginBottom: "10px" }}>
           <label>Color: </label>
           <select value={color} onChange={(e) => setColor(e.target.value)}>
@@ -597,11 +650,15 @@ const Customization = () => {
             <option value="blue">Blue</option>
           </select>
         </div>
-        <div className="productSizes" style={{ marginBottom: "33px" }}>
+        <div
+          className="productSizes flex gap-2"
+          style={{ marginBottom: "33px" }}
+        >
           {sizes.map((item, index) => (
             <label key={item.size}>
-              {item.size}
+              {item.size} :{" "}
               <input
+                className="w-[50px] bg-gray-200"
                 type="number"
                 value={item.quantity}
                 onChange={(e) =>
@@ -611,7 +668,9 @@ const Customization = () => {
             </label>
           ))}
         </div>
-        <button onClick={handleAddToCart}>Add to cart</button>
+        <button className="bg-blue-300 p-1" onClick={handleAddToCart}>
+          Add to cart
+        </button>
       </div>
     </div>
   );

@@ -7,14 +7,29 @@ import Header from "../components/header/Header";
 import Newsletter from "../components/newsletter/Newsletter";
 import Footer from "../components/footer/Footer";
 import ProductFilters from "../components/product-filters/ProductFilters";
+import { Await } from "react-router-dom";
+import axios from "axios";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
+  const [apiProducts, setApiProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
-  const [showFilters, setShowFilters] = useState(false); // Toggle state
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
+    // const fetchApiProduct = async () => {
+    //   try {
+    //     await axios
+    //       .get("http://localhost:8000/api/product/allProduct")
+    //       .then((res) => console.log(res.data))
+    //       .catch((err) => console.log(err));
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // fetchApiProduct();
+
     const fetchProducts = async () => {
       try {
         const mockProducts = [

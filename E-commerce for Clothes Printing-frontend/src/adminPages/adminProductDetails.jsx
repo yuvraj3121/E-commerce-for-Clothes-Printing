@@ -15,11 +15,15 @@ const AdminProductDetails = ({ selectedProduct, setComponentSelect }) => {
       </button>
 
       <div>
-        <img className="h-[500px] w-[400px] mb-2" src={productImage} alt="" />
+        <img
+          className="h-[500px] w-[400px] mb-2 object-contain"
+          src={productImage}
+          alt=""
+        />
         <div className="ml-2 flex flex-row gap-2">
           <span>
             <img
-              className="h-[70px] w-[50px] cursor-pointer"
+              className="h-[70px] w-[50px] cursor-pointer object-contain"
               src={selectedProduct.productImage[0].url}
               alt=""
               onClick={() =>
@@ -29,7 +33,7 @@ const AdminProductDetails = ({ selectedProduct, setComponentSelect }) => {
           </span>
           <span>
             <img
-              className="h-[70px] w-[50px] cursor-pointer"
+              className="h-[70px] w-[50px] cursor-pointer object-contain"
               src={selectedProduct.productImage[1].url}
               alt=""
               onClick={() =>

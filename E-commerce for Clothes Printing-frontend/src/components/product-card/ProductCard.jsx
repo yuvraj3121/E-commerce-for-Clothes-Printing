@@ -19,8 +19,8 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
     >
       <div className="relative">
         <img
-          src={product.image[0].url}
-          alt={product.name}
+          src={product.productImage[0].url}
+          alt={product.productName}
           className="w-full h-64 object-contain"
         />
         <button
@@ -38,20 +38,18 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
         </div>
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+        <h3 className="text-lg font-semibold mb-2">{product.productName}</h3>
         <div className="flex items-center space-x-2 mb-2">
-          <span className="text-blue-600 font-bold text-lg">
+          {/* <span className="text-blue-600 font-bold text-lg">
             ₹{product.discountedPrice}
-          </span>
-          <span className="line-through text-gray-400 text-sm">
-            ₹{product.price}
-          </span>
-          <span className="text-red-600 font-semibold text-sm">
+          </span> */}
+          <span className=" text-gray-900 text-sm">₹{product.price}</span>
+          {/* <span className="text-red-600 font-semibold text-sm">
             {Math.round((1 - product.discountedPrice / product.price) * 100)}%
             OFF
-          </span>
+          </span> */}
         </div>
-        <div className="flex space-x-2">
+        {/* <div className="flex space-x-2">
           {product.colors.map((color) => (
             <span
               key={color}
@@ -59,7 +57,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist }) => {
               style={{ backgroundColor: color }}
             ></span>
           ))}
-        </div>
+        </div> */}
         {/* Uncomment to enable Add to Cart button */}
         {/* <button
           onClick={(e) => {

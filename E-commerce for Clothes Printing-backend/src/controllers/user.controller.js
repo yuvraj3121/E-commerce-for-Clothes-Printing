@@ -54,6 +54,7 @@ const loginUser = async (req, res) => {
     });
 
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    console.log(1);
 
     const isPasswordvalid = user && (await user.comparePassword(password));
     if (!isPasswordvalid)

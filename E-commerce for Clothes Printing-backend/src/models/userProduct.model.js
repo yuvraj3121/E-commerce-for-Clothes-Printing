@@ -35,6 +35,12 @@ const userProductSchema = new mongoose.Schema(
     printLocation: {
       type: [String],
     },
+    customizedFrontImage: {
+      type: String,
+    },
+    customizedBackImage: {
+      type: String,
+    },
     sizes: [
       {
         size: { type: String, required: true },

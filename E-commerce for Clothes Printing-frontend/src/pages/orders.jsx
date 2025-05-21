@@ -14,25 +14,25 @@ const Orders = ({}) => {
   const [userOrders, setUserOrders] = useState(null);
 
   useEffect(() => {
+    if (!user?._id) return;
+
     const fetchUserOrders = async () => {
       try {
-        await axios
-          .get(`http://localhost:8000/api/order/userOrder/${user._id}`)
-          .then((res) => {
-            let orders = res.data.orders.map((order) => ({
-              orderedOn: order.createdAt,
-              ...order,
-            }));
-            setUserOrders(orders);
-            // console.log(res.data.orders);
-          });
+        const res = await axios.get(
+          `http://localhost:8000/api/order/userOrder/${user._id}`
+        );
+        const orders = res.data.orders.map((order) => ({
+          orderedOn: order.createdAt,
+          ...order,
+        }));
+        setUserOrders(orders);
       } catch (error) {
         console.log(error);
       }
     };
+
     fetchUserOrders();
-    // console.log("userorders", userOrders);
-  }, [user._id]);
+  }, [user]);
 
   return (
     <>

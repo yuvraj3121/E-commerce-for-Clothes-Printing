@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   FiHome,
   FiShoppingBag,
@@ -15,12 +15,17 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import axios from "axios";
 import AdminDashboard from "./adminDashboard";
 import AdminProducts from "./adminProducts";
+import AdminOrders from "./adminOrders";
+import { AuthContext } from "../context/AuthContext";
 
 const AdminHome = () => {
+  const { user, logout } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [usersData, setUsersData] = useState(null);
   const [allProduct, setAllProduct] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -44,18 +49,39 @@ const AdminHome = () => {
       }
     };
     fetchAllProduct();
+
+    const fetchAllOrders = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/order/allOrder");
+        const orders = res.data.orders;
+        setAllOrders({ orders });
+
+        const amount = orders.reduce((acc, order) => {
+          const orderTotal = order.product.reduce((sum, item) => {
+            return sum + item.price * item.quantity;
+          }, 0);
+          return acc + orderTotal;
+        }, 0);
+
+        setTotalAmount(amount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllOrders();
+    // console.log("all", allOrders.orders);
   }, []);
 
   const stats = [
     {
       title: "Total Sales",
-      value: "₹12,345",
+      value: `₹${totalAmount}`,
       icon: <FaRupeeSign size={24} />,
       change: "+12%",
     },
     {
       title: "Orders",
-      value: "0",
+      value: allOrders?.orders?.length || 0,
       icon: <AiOutlineShoppingCart size={24} />,
       change: "+5%",
     },
@@ -139,7 +165,10 @@ const AdminHome = () => {
           </ul>
         </nav>
         <div className="absolute bottom-0 w-full p-4">
-          <button className="flex items-center w-full p-3 text-red-300 hover:bg-blue-700 rounded-lg transition">
+          <button
+            className="flex items-center w-full p-3 text-red-300 hover:bg-blue-700 rounded-lg transition"
+            onClick={() => logout()}
+          >
             <FiLogOut className="mr-3" />
             Logout
           </button>
@@ -168,7 +197,7 @@ const AdminHome = () => {
             <AdminDashboard stats={stats} recentOrders={recentOrders} />
           )}
 
-          {activeTab === "orders" && <div>Orders Management Content</div>}
+          {activeTab === "orders" && <AdminOrders />}
           {activeTab === "products" && <AdminProducts />}
           {activeTab === "customers" && <div>Customers Management Content</div>}
           {activeTab === "analytics" && <div>Analytics Content</div>}
