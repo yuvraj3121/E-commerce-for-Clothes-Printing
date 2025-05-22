@@ -5,6 +5,7 @@ import AdminOrderdetails from "./adminOrderdetails";
 const AdminOrders = () => {
   const [allOrders, setAllOrders] = useState(null);
   const [viewDetails, setViewDetails] = useState(false);
+  const [orderId, setOrderId] = useState(null);
   useEffect(() => {
     const fetchAllOrders = async () => {
       try {
@@ -72,7 +73,10 @@ const AdminOrders = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       <button
                         className="text-blue-500 hover:bg-blue-100"
-                        onClick={() => setViewDetails(true)}
+                        onClick={() => {
+                          setOrderId(order._id);
+                          setViewDetails(true);
+                        }}
                       >
                         view details
                       </button>
@@ -85,7 +89,10 @@ const AdminOrders = () => {
         </div>
       ) : (
         <div>
-          <AdminOrderdetails />
+          <AdminOrderdetails
+            orderId={orderId}
+            setViewDetails={setViewDetails}
+          />
         </div>
       )}
     </div>

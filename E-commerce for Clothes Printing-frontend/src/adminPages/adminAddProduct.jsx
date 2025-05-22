@@ -34,30 +34,21 @@ const AdminAddProduct = ({ mockProducts, setComponentSelect }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
-    const colorsArray = product.colors.toLowerCase().split(", ");
-    const sizesArray = product.sizes.toUpperCase().split(", ");
-    // dispatch(
-    //   addToAllProduct({
-    //     id: Date.now(),
-    //     name: product.name,
-    //     category: product.category,
-    //     price: product.price,
-    //     sizes: sizesArray,
-    //     colors: colorsArray,
-    //     image: [
-    //       { side: "Front", url: frontImage },
-    //       { side: "Back", url: backImage },
-    //     ],
-    //   })
-    // );
-    // alert("Product Added.");
-    // setComponentSelect("main");
+    const colorsArray = product.colors
+      .toLowerCase()
+      .split(",")
+      .map((item) => item.trim());
+    const sizesArray = product.sizes
+      .toUpperCase()
+      .split(",")
+      .map((item) => item.trim());
+
     const formData = new FormData();
     formData.append("productName", product.name);
     formData.append("category", product.category);
     formData.append("price", product.price);
-    formData.append("sizes", sizesArray);
-    formData.append("colors", colorsArray);
+    formData.append("sizes", JSON.stringify(sizesArray));
+    formData.append("colors", JSON.stringify(colorsArray));
     formData.append("frontImage", frontImageFile);
     formData.append("backImage", backImageFile);
 

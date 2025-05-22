@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiShoppingBag } from "react-icons/fi";
 import { IoShirtOutline } from "react-icons/io5";
+import { MdOutlineDeleteForever } from "react-icons/md";
 import AdminProductDetails from "./adminProductDetails";
 import AdminAddProduct from "./adminAddProduct";
 import { addToAllProduct } from "../features/productSlice";
@@ -31,7 +32,23 @@ const AdminProducts = () => {
     fetchAllProduct();
     allProduct.map((product) => dispatch(addToAllProduct(product)));
     // console.log(allProduct);
-  }, []);
+  }, [componentSelect]);
+
+  const HandleDelete = async (productId) => {
+    try {
+      await axios
+        .delete(`http://localhost:8000/api/product/deleteProduct/${productId}`)
+        .then((res) => {
+          console.log(res.data);
+          setAllProduct((prevProducts) =>
+            prevProducts.filter((product) => product._id !== productId)
+          );
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -75,6 +92,7 @@ const AdminProducts = () => {
                       Category
                     </th>
                     <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                    <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -99,6 +117,14 @@ const AdminProducts = () => {
                         >
                           view details{" "}
                         </p>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex justify-center items-center gap-1">
+                        <button
+                          className="text-red-400 hover:bg-red-200 p-1 text-lg"
+                          onClick={() => HandleDelete(product._id)}
+                        >
+                          <MdOutlineDeleteForever />
+                        </button>
                       </td>
                     </tr>
                   ))}

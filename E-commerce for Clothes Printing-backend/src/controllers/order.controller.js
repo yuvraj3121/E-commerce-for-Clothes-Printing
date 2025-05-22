@@ -62,4 +62,28 @@ const getUserOrders = async (req, res) => {
   }
 };
 
-export { createOrder, getAllOrder, getUserOrders };
+const getOrderById = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const order = await Order.findById(orderId)
+      .populate("customer")
+      .populate("product");
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "Order fetched successfully.",
+      order,
+    });
+  } catch (error) {
+    console.error("Error fetching order:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch order.", error: error.message });
+  }
+};
+
+export { createOrder, getAllOrder, getUserOrders, getOrderById };

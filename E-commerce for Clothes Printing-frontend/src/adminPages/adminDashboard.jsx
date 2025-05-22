@@ -1,21 +1,95 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { FaRupeeSign } from "react-icons/fa";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import {
+  FiHome,
+  FiShoppingBag,
+  FiUsers,
+  FiPieChart,
+  FiSettings,
+  FiLogOut,
+  FiMenu,
+  FiX,
+} from "react-icons/fi";
 
-const AdminDashboard = ({ stats, recentOrders }) => {
-  const [allOrders, setAllOrders] = useState(null);
+const AdminDashboard = () => {
+  const [usersData, setUsersData] = useState(null);
+  const [allProduct, setAllProduct] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+
   useEffect(() => {
-    const fetchAllOrders = async () => {
+    const getUsers = async () => {
+      await axios
+        .get("http://localhost:8000/api/user/allUsers")
+        .then((res) => setUsersData(res.data))
+        .catch((err) => console.log(err));
+    };
+    getUsers();
+
+    const fetchAllProduct = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/order/allOrder")
-          .then((res) => setAllOrders(res.data))
+          .get("http://localhost:8000/api/product/allProduct")
+          .then((res) => {
+            setAllProduct(res.data);
+          })
           .catch((err) => console.log(err));
       } catch (error) {
         console.log(error);
       }
     };
+    fetchAllProduct();
+
+    const fetchAllOrders = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/order/allOrder");
+        const orders = res.data.orders;
+        setAllOrders({ orders });
+
+        const amount = orders.reduce((acc, order) => {
+          const orderTotal = order.product.reduce((sum, item) => {
+            return sum + item.price * item.quantity;
+          }, 0);
+          return acc + orderTotal;
+        }, 0);
+
+        setTotalAmount(amount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAllOrders();
+    // console.log("all", allOrders.orders);
   }, []);
+
+  const stats = [
+    {
+      title: "Total Sales",
+      value: `₹${totalAmount}`,
+      icon: <FaRupeeSign size={24} />,
+      change: "+12%",
+    },
+    {
+      title: "Orders",
+      value: allOrders?.orders?.length || 0,
+      icon: <AiOutlineShoppingCart size={24} />,
+      change: "+5%",
+    },
+    {
+      title: "Products",
+      value: allProduct?.count || 0,
+      icon: <FiShoppingBag size={24} />,
+      change: "+3%",
+    },
+    {
+      title: "Customers",
+      value: usersData?.count || 0,
+      icon: <FiUsers size={24} />,
+      change: "+8%",
+    },
+  ];
 
   return (
     <>
@@ -38,9 +112,12 @@ const AdminDashboard = ({ stats, recentOrders }) => {
       <div className="bg-white p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold">Recent Orders</h3>
-          <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+          {/* <button
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            onClick={() => {}}
+          >
             View All
-          </button>
+          </button> */}
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -64,7 +141,7 @@ const AdminDashboard = ({ stats, recentOrders }) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {allOrders?.orders.map((order) => (
+              {allOrders?.orders?.slice(0, 5).map((order) => (
                 <tr key={order._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
                     {order._id}

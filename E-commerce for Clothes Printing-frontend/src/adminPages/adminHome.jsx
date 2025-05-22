@@ -3,125 +3,22 @@ import {
   FiHome,
   FiShoppingBag,
   FiUsers,
-  FiPieChart,
   FiSettings,
   FiLogOut,
   FiMenu,
   FiX,
 } from "react-icons/fi";
-import { FaRupeeSign } from "react-icons/fa";
 import { BsBoxSeam, BsGraphUp } from "react-icons/bs";
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import axios from "axios";
 import AdminDashboard from "./adminDashboard";
 import AdminProducts from "./adminProducts";
 import AdminOrders from "./adminOrders";
 import { AuthContext } from "../context/AuthContext";
+import AdminCustomers from "./adminCustomers";
 
 const AdminHome = () => {
   const { user, logout } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [usersData, setUsersData] = useState(null);
-  const [allProduct, setAllProduct] = useState([]);
-  const [allOrders, setAllOrders] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-
-  useEffect(() => {
-    const getUsers = async () => {
-      await axios
-        .get("http://localhost:8000/api/user/allUsers")
-        .then((res) => setUsersData(res.data))
-        .catch((err) => console.log(err));
-    };
-    getUsers();
-
-    const fetchAllProduct = async () => {
-      try {
-        await axios
-          .get("http://localhost:8000/api/product/allProduct")
-          .then((res) => {
-            setAllProduct(res.data);
-          })
-          .catch((err) => console.log(err));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllProduct();
-
-    const fetchAllOrders = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/order/allOrder");
-        const orders = res.data.orders;
-        setAllOrders({ orders });
-
-        const amount = orders.reduce((acc, order) => {
-          const orderTotal = order.product.reduce((sum, item) => {
-            return sum + item.price * item.quantity;
-          }, 0);
-          return acc + orderTotal;
-        }, 0);
-
-        setTotalAmount(amount);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllOrders();
-    // console.log("all", allOrders.orders);
-  }, []);
-
-  const stats = [
-    {
-      title: "Total Sales",
-      value: `₹${totalAmount}`,
-      icon: <FaRupeeSign size={24} />,
-      change: "+12%",
-    },
-    {
-      title: "Orders",
-      value: allOrders?.orders?.length || 0,
-      icon: <AiOutlineShoppingCart size={24} />,
-      change: "+5%",
-    },
-    {
-      title: "Products",
-      value: allProduct?.count || 0,
-      icon: <FiShoppingBag size={24} />,
-      change: "+3%",
-    },
-    {
-      title: "Customers",
-      value: usersData?.count || 0,
-      icon: <FiUsers size={24} />,
-      change: "+8%",
-    },
-  ];
-
-  const recentOrders = [
-    {
-      id: "#12345",
-      customer: "John Doe",
-      date: "2023-11-15",
-      status: "Shipped",
-      total: "₹125.99",
-    },
-    {
-      id: "#12346",
-      customer: "Jane Smith",
-      date: "2023-11-14",
-      status: "Delivered",
-      total: "₹89.50",
-    },
-    {
-      id: "#12347",
-      customer: "Alex Johnson",
-      date: "2023-11-13",
-      status: "Processing",
-      total: "₹234.00",
-    },
-  ];
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -193,13 +90,11 @@ const AdminHome = () => {
         </header>
 
         <main className="p-6">
-          {activeTab === "dashboard" && (
-            <AdminDashboard stats={stats} recentOrders={recentOrders} />
-          )}
+          {activeTab === "dashboard" && <AdminDashboard />}
 
           {activeTab === "orders" && <AdminOrders />}
           {activeTab === "products" && <AdminProducts />}
-          {activeTab === "customers" && <div>Customers Management Content</div>}
+          {activeTab === "customers" && <AdminCustomers />}
           {activeTab === "analytics" && <div>Analytics Content</div>}
           {activeTab === "settings" && <div>Settings Content</div>}
         </main>
