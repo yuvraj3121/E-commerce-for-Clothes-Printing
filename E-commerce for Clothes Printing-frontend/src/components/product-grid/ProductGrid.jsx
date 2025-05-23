@@ -14,7 +14,7 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
         await axios
           .get("http://localhost:8000/api/product/allProduct")
           .then((res) => {
-            console.log(res.data.products);
+            // console.log(res.data.products);
             setAllProduct(res.data.products);
           })
           .catch((err) => console.log(err));

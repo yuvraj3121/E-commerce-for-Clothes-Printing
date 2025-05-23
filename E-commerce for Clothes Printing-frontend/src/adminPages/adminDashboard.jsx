@@ -2,21 +2,14 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaRupeeSign } from "react-icons/fa";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import {
-  FiHome,
-  FiShoppingBag,
-  FiUsers,
-  FiPieChart,
-  FiSettings,
-  FiLogOut,
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
+import { FiShoppingBag, FiUsers } from "react-icons/fi";
+import { BsShopWindow } from "react-icons/bs";
 
 const AdminDashboard = () => {
   const [usersData, setUsersData] = useState(null);
   const [allProduct, setAllProduct] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
+  const [allVendors, setAllVendors] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
@@ -61,7 +54,20 @@ const AdminDashboard = () => {
       }
     };
     fetchAllOrders();
-    // console.log("all", allOrders.orders);
+
+    const fetchAllVendors = async () => {
+      try {
+        await axios
+          .get("http://localhost:8000/api/vendor/AllVendors")
+          .then((res) => {
+            setAllVendors(res.data);
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllVendors();
   }, []);
 
   const stats = [
@@ -89,11 +95,17 @@ const AdminDashboard = () => {
       icon: <FiUsers size={24} />,
       change: "+8%",
     },
+    {
+      title: "Vendors",
+      value: allVendors?.count || 0,
+      icon: <BsShopWindow size={24} />,
+      change: "+8%",
+    },
   ];
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white p-6 rounded-xl shadow">
             <div className="flex justify-evenly items-start">
@@ -112,12 +124,6 @@ const AdminDashboard = () => {
       <div className="bg-white p-6 rounded-xl shadow">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-semibold">Recent Orders</h3>
-          {/* <button
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-            onClick={() => {}}
-          >
-            View All
-          </button> */}
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">

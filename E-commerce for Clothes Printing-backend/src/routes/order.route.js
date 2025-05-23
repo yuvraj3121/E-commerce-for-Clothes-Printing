@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  changeOrderStatus,
   createOrder,
   getAllOrder,
   getOrderById,
@@ -12,5 +13,6 @@ router.post("/createOrder", createOrder);
 router.get("/allOrder", getAllOrder);
 router.get("/userOrder/:userId", getUserOrders);
 router.get("/orderDetails/:orderId", getOrderById);
+router.patch("/updateStatus/:orderId", changeOrderStatus);
 
 export default router;

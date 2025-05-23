@@ -24,8 +24,12 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Delivered", "Shipped"],
+      enum: ["Pending", "Under Process", "Delivered", "Shipped", "Cancelled"],
       default: "Pending",
+    },
+    vendor: {
+      type: Schema.Types.ObjectId,
+      ref: "VendorApplication",
     },
   },
   {

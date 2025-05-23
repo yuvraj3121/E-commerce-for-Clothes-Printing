@@ -14,7 +14,7 @@ const AdminCustomers = () => {
     getUsers();
   }, []);
 
-  console.log(allUsers);
+  // console.log(allUsers);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow">

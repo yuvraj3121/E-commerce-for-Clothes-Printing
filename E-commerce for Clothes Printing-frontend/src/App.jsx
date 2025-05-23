@@ -17,6 +17,8 @@ import Orders from "./pages/orders";
 import OrderDetails from "./pages/orderDetails";
 import AdminDashboard from "./adminPages/adminHome";
 import AdminHome from "./adminPages/adminHome";
+import VendorApplication from "./pages/VendorApplication";
+import VendorHome from "./vendorPages/vendorHome";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/orderDetails" element={<OrderDetails />} />
         <Route path="/adminHome" element={<AdminHome />} />
+        <Route path="/vendorHome" element={<VendorHome />} />
+        <Route path="/vendorApplication" element={<VendorApplication />} />
       </Routes>
     </div>
   );

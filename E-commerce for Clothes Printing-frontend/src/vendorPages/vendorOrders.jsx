@@ -1,29 +1,39 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import AdminOrderdetails from "./adminOrderdetails";
+import { FiShoppingBag } from "react-icons/fi";
+import VendorOrderdetails from "./vendorOrderDetails";
 
-const AdminOrders = () => {
+const VendorOrders = () => {
   const [allOrders, setAllOrders] = useState(null);
   const [viewDetails, setViewDetails] = useState(false);
   const [orderId, setOrderId] = useState(null);
   useEffect(() => {
     const fetchAllOrders = async () => {
       try {
-        await axios
-          .get("http://localhost:8000/api/order/allOrder")
-          .then((res) => setAllOrders(res.data))
-          .catch((err) => console.log(err));
+        const res = await axios.get("http://localhost:8000/api/order/allOrder");
+        setAllOrders(
+          res.data.orders.filter((order) => order.status !== "Pending")
+        );
       } catch (error) {
         console.log(error);
       }
     };
     fetchAllOrders();
-  }, []);
-  console.log(allOrders);
+  }, [viewDetails]);
+  //   console.log(allOrders);
   return (
     <div className="bg-white p-6 rounded-xl shadow">
       {viewDetails == false ? (
         <div>
+          <div className="flex justify-evenly items-start bg-white p-6 rounded-xl shadow w-[300px] mb-4">
+            <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
+              <FiShoppingBag size={24} />
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Total Orderss</p>
+              <p className="text-2xl font-bold mt-1">{allOrders?.length}</p>
+            </div>
+          </div>
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold">All Orders</h3>
           </div>
@@ -47,7 +57,7 @@ const AdminOrders = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {allOrders?.orders.map((order) => (
+                {allOrders?.map((order) => (
                   <tr key={order._id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
                       {order._id}
@@ -90,7 +100,7 @@ const AdminOrders = () => {
         </div>
       ) : (
         <div>
-          <AdminOrderdetails
+          <VendorOrderdetails
             orderId={orderId}
             setViewDetails={setViewDetails}
           />
@@ -100,4 +110,4 @@ const AdminOrders = () => {
   );
 };
 
-export default AdminOrders;
+export default VendorOrders;

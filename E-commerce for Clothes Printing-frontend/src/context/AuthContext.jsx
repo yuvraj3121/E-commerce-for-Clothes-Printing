@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           );
           setUser(res.data.user);
 
-          // console.log(res.data);
+          console.log(res.data.user);
         }
       } catch (err) {
         localStorage.removeItem("token");
@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }) => {
 
       if (res.data.user.role === "admin") {
         navigate("/adminHome");
+      } else if (res.data.user.role === "vendor") {
+        navigate("/vendorHome");
       } else {
         navigate("/");
       }

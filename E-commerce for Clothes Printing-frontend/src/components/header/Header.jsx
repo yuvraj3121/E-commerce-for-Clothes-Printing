@@ -122,6 +122,15 @@ const Header = ({ cartCount }) => {
                   >
                     Account Settings
                   </Link>
+                  {user.role == "user" && (
+                    <Link
+                      to="/vendorApplication"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2 text-gray-700 hover:bg-blue-100"
+                    >
+                      Apply as Vendor
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 flex items-center space-x-2"
