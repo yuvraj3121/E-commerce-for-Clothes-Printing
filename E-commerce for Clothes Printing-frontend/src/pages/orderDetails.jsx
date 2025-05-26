@@ -13,7 +13,7 @@ const OrderDetails = () => {
     try {
       await axios
         .patch(
-          `http://localhost:8000/api/order/updateStatus/${selectedOrder.orderId}`,
+          `https://designdrip-v1.onrender.com/api/order/updateStatus/${selectedOrder.orderId}`,
           {
             status: "Cancelled",
           }
@@ -30,7 +30,7 @@ const OrderDetails = () => {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/order/orderDetails/${selectedOrder.orderId}`
+          `https://designdrip-v1.onrender.com/api/order/orderDetails/${selectedOrder.orderId}`
         );
         setStatus(res.data.order.status);
       } catch (error) {

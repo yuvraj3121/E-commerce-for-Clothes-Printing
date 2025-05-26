@@ -19,7 +19,7 @@ const Orders = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const res = await axios.get(
-            "http://localhost:8000/api/user/profile",
+            "https://designdrip-v1.onrender.com/api/user/profile",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -27,7 +27,7 @@ const Orders = () => {
           setUser(res.data.user);
           await axios
             .get(
-              `http://localhost:8000/api/order/userOrder/${res.data.user._id}`
+              `https://designdrip-v1.onrender.com/api/order/userOrder/${res.data.user._id}`
             )
             .then((res) => {
               const orders = res.data.orders.map((order) => ({

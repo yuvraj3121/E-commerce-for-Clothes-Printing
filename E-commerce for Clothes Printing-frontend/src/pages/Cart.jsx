@@ -21,21 +21,30 @@ const Cart = ({}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const checkAuth = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/cart/userCart/${user._id}`
-        );
-        const items = res.data.map((cart) => ({
-          cartId: cart._id,
-          ...cart.product,
-        }));
-        setCartItems(items);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "https://designdrip-v1.onrender.com/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const response = await axios.get(
+            `https://designdrip-v1.onrender.com/api/cart/userCart/${res.data.user._id}`
+          );
+          const items = response.data.map((cart) => ({
+            cartId: cart._id,
+            ...cart.product,
+          }));
+          setCartItems(items);
+        }
       } catch (err) {
-        console.error(err);
+        localStorage.removeItem("token");
       }
     };
-    fetchCartItems();
+    checkAuth();
   }, []);
 
   const calculateTotal = () => {
@@ -50,14 +59,14 @@ const Cart = ({}) => {
     // console.log(productId);
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/cart/removeCartItem/${cartId}`
+        `https://designdrip-v1.onrender.com/api/cart/removeCartItem/${cartId}`
       );
       setCartItems((prevItems) =>
         prevItems.filter((item) => item.cartId !== cartId)
       );
 
       await axios.delete(
-        `http://localhost:8000/api/userProduct/deleteUserProduct/${productId}`
+        `https://designdrip-v1.onrender.com/api/userProduct/deleteUserProduct/${productId}`
       );
     } catch (error) {
       console.log(error);

@@ -24,7 +24,7 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/userProduct/getProductById/${productId}`
+          `https://designdrip-v1.onrender.com/api/userProduct/getProductById/${productId}`
         );
         // console.log(res.data);
         setProduct(res.data.product);

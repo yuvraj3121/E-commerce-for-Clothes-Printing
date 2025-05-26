@@ -16,7 +16,7 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/order/orderDetails/${orderId}`
+          `https://designdrip-v1.onrender.com/api/order/orderDetails/${orderId}`
         );
         setOrderDetails(res.data.order || {});
         setCustomerDetails(res.data.order.customer || {});
@@ -37,7 +37,7 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
 
     try {
       const res = await axios.patch(
-        `http://localhost:8000/api/order/updateStatus/${orderId}`,
+        `https://designdrip-v1.onrender.com/api/order/updateStatus/${orderId}`,
         {
           status: newStatus,
         }

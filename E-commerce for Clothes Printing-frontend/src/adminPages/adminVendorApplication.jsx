@@ -13,7 +13,7 @@ const AdminVendorApplication = ({ setNewVendors }) => {
     const fetchAllVendors = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/vendor/AllVendors"
+          "https://designdrip-v1.onrender.com/api/vendor/AllVendors"
         );
         setAllVendors(
           res.data.vendors.filter((vendor) => vendor.status === "pending")
@@ -28,7 +28,9 @@ const AdminVendorApplication = ({ setNewVendors }) => {
   const handleViewDetails = async (vendorId) => {
     try {
       await axios
-        .get(`http://localhost:8000/api/vendor/vendorData/${vendorId}`)
+        .get(
+          `https://designdrip-v1.onrender.com/api/vendor/vendorData/${vendorId}`
+        )
         .then((res) => {
           setVendorData(res.data.vendor);
           setViewDetails(true);
@@ -43,10 +45,13 @@ const AdminVendorApplication = ({ setNewVendors }) => {
     console.log(userId, vendorId);
     try {
       await axios
-        .patch("http://localhost:8000/api/vendor/changeVendorStatus", {
-          userId,
-          vendorId,
-        })
+        .patch(
+          "https://designdrip-v1.onrender.com/api/vendor/changeVendorStatus",
+          {
+            userId,
+            vendorId,
+          }
+        )
         .then((res) => {
           console.log(res.data);
           setViewDetails(false);
@@ -59,7 +64,9 @@ const AdminVendorApplication = ({ setNewVendors }) => {
   const handleReject = async (vendorId) => {
     try {
       await axios
-        .delete(`http://localhost:8000/api/vendor/deleteVendor/${vendorId}`)
+        .delete(
+          `https://designdrip-v1.onrender.com/api/vendor/deleteVendor/${vendorId}`
+        )
         .then((res) => {
           console.log(res.data);
           setViewDetails(false);

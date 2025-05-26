@@ -19,7 +19,7 @@ const AdminProducts = () => {
     const fetchAllProduct = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/product/allProduct")
+          .get("https://designdrip-v1.onrender.com/api/product/allProduct")
           .then((res) => {
             // console.log(res.data);
             setAllProduct(res.data.products);
@@ -37,7 +37,9 @@ const AdminProducts = () => {
   const HandleDelete = async (productId) => {
     try {
       await axios
-        .delete(`http://localhost:8000/api/product/deleteProduct/${productId}`)
+        .delete(
+          `https://designdrip-v1.onrender.com/api/product/deleteProduct/${productId}`
+        )
         .then((res) => {
           console.log(res.data);
           setAllProduct((prevProducts) =>

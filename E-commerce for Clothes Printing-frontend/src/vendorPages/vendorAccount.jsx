@@ -14,7 +14,7 @@ const VendorAccount = ({ vendorId }) => {
     const fetchVendor = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/vendor/vendorData/${vendorId}`
+          `https://designdrip-v1.onrender.com/api/vendor/vendorData/${vendorId}`
         );
         setVendorDetails(res.data.vendor);
         const typeString = res.data.vendor.printingType.join(", ");
@@ -50,7 +50,7 @@ const VendorAccount = ({ vendorId }) => {
 
     try {
       const res = await axios.patch(
-        `http://localhost:8000/api/vendor/updateDetails/${vendorId}`,
+        `https://designdrip-v1.onrender.com/api/vendor/updateDetails/${vendorId}`,
         {
           printingType: printingTypeArray,
           services: servicesArray,

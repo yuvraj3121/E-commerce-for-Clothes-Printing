@@ -15,7 +15,7 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/order/orderDetails/${orderId}`
+          `https://designdrip-v1.onrender.com/api/order/orderDetails/${orderId}`
         );
         setOrderDetails(res.data.order || {});
         setCustomerDetails(res.data.order.customer || {});
@@ -37,7 +37,7 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
     setShowVendors(true);
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/vendor/AllVendors"
+        "https://designdrip-v1.onrender.com/api/vendor/AllVendors"
       );
       setAllVendors(
         res.data.vendors.filter(
@@ -55,7 +55,7 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
   const handleAssignVendor = async (orderId, vendorId) => {
     try {
       const res = await axios.patch(
-        "http://localhost:8000/api/vendor/assignOrder",
+        "https://designdrip-v1.onrender.com/api/vendor/assignOrder",
         { orderId, vendorId }
       );
       // console.log(res.data);

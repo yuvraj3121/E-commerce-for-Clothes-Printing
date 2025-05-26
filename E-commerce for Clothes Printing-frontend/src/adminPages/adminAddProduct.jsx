@@ -54,11 +54,15 @@ const AdminAddProduct = ({ mockProducts, setComponentSelect }) => {
 
     try {
       await axios
-        .post("http://localhost:8000/api/product/createProduct", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          "https://designdrip-v1.onrender.com/api/product/createProduct",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           console.log(res);
           alert("Product Added.");

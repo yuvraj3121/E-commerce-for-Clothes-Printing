@@ -12,7 +12,7 @@ const VendorApplication = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const res = await axios.get(
-            "http://localhost:8000/api/user/profile",
+            "https://designdrip-v1.onrender.com/api/user/profile",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -105,7 +105,7 @@ const VendorApplication = () => {
 
     try {
       await axios.post(
-        `http://localhost:8000/api/vendor/registerVendor/${user._id}`,
+        `https://designdrip-v1.onrender.com/api/vendor/registerVendor/${user._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

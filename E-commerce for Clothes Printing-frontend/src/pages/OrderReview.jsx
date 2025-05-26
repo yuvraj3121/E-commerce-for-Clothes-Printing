@@ -6,13 +6,13 @@ import axios from "axios";
 
 const OrderReview = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
   const { userDetails } = useSelector((state) => state.shippingDetails);
   const { totalAmount } = useSelector((state) => state.cart);
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const checkAuth = async () => {
       if (!window.Razorpay) {
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -22,25 +22,35 @@ const OrderReview = () => {
       }
 
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/cart/userCart/${user._id}`
-        );
-        const items = res.data.map((cart) => ({
-          cartId: cart._id,
-          ...cart.product,
-        }));
-        setCartItems(items);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "https://designdrip-v1.onrender.com/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+          const response = await axios.get(
+            `https://designdrip-v1.onrender.com/api/cart/userCart/${res.data.user._id}`
+          );
+          const items = response.data.map((cart) => ({
+            cartId: cart._id,
+            ...cart.product,
+          }));
+          setCartItems(items);
+        }
       } catch (err) {
-        console.error(err);
+        localStorage.removeItem("token");
       }
     };
-    fetchCartItems();
-  }, [user._id]);
+    checkAuth();
+  }, []);
 
   const handlePlaceOrder = async () => {
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/payment/processPayment",
+        "https://designdrip-v1.onrender.com/api/payment/processPayment",
         {
           amount: totalAmount,
           userId: user._id,
@@ -56,7 +66,7 @@ const OrderReview = () => {
         handler: async function (response) {
           console.log("Payment Response:", response);
           const { data: verifiedPayment } = await axios.post(
-            "http://localhost:8000/api/payment/verifyPayment",
+            "https://designdrip-v1.onrender.com/api/payment/verifyPayment",
             {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
@@ -67,7 +77,7 @@ const OrderReview = () => {
 
           const productIds = cartItems.map((item) => item._id);
           const res = await axios.post(
-            "http://localhost:8000/api/order/createOrder",
+            "https://designdrip-v1.onrender.com/api/order/createOrder",
             {
               customerId: user._id,
               product: productIds,
@@ -77,7 +87,7 @@ const OrderReview = () => {
           );
 
           const { data: paymentDetails } = await axios.patch(
-            `http://localhost:8000/api/payment/updatePaymentMethod`,
+            `https://designdrip-v1.onrender.com/api/payment/updatePaymentMethod`,
             {
               id: verifiedPayment.payment._id,
               paymentId: response.razorpay_payment_id,
@@ -87,7 +97,7 @@ const OrderReview = () => {
           console.log("Payment details :", paymentDetails);
 
           await axios.delete(
-            `http://localhost:8000/api/cart/deleteUserCart/${user._id}`
+            `https://designdrip-v1.onrender.com/api/cart/deleteUserCart/${user._id}`
           );
           window.location.href = "/";
         },

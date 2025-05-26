@@ -301,7 +301,7 @@ const Customization = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/userProduct/createUserProduct",
+        "https://designdrip-v1.onrender.com/api/userProduct/createUserProduct",
         formData,
         {
           headers: {
@@ -312,10 +312,13 @@ const Customization = () => {
 
       const createdProduct = res.data.product;
 
-      await axios.post("http://localhost:8000/api/cart/addToCart", {
-        userId: user._id,
-        productId: createdProduct._id,
-      });
+      await axios.post(
+        "https://designdrip-v1.onrender.com/api/cart/addToCart",
+        {
+          userId: user._id,
+          productId: createdProduct._id,
+        }
+      );
 
       alert("Added to cart!");
       navigate("/");
@@ -331,7 +334,7 @@ const Customization = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const res = await axios.get(
-            "http://localhost:8000/api/user/profile",
+            "https://designdrip-v1.onrender.com/api/user/profile",
             {
               headers: { Authorization: `Bearer ${token}` },
             }

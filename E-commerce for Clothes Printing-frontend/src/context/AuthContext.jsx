@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem("token");
         if (token) {
           const res = await axios.get(
-            "http://localhost:8000/api/user/profile",
+            "https://designdrip-v1.onrender.com/api/user/profile",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -35,10 +35,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/user/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        "https://designdrip-v1.onrender.com/api/user/login",
+        {
+          email,
+          password,
+        }
+      );
 
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
@@ -47,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       if (res.data.user.role === "admin") {
         navigate("/adminHome");
       } else if (res.data.user.role === "vendor") {
-        navigate("/choicePage");
+        navigate("/vendorHome");
       } else {
         navigate("/");
       }
@@ -57,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (userName, fullName, email, password, phoneNumber) => {
-    await axios.post("http://localhost:8000/api/user/signup", {
+    await axios.post("https://designdrip-v1.onrender.com/api/user/signup", {
       userName,
       fullName,
       email,
@@ -77,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     // console.log(token);
     const res = await axios.patch(
-      "http://localhost:8000/api/user/updateProfile",
+      "https://designdrip-v1.onrender.com/api/user/updateProfile",
 
       {
         userName: userData.userName,

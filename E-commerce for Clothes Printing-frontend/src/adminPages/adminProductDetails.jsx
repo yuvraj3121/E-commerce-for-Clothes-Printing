@@ -55,7 +55,7 @@ const AdminProductDetails = ({ selectedProduct, setComponentSelect }) => {
     try {
       await axios
         .patch(
-          `http://localhost:8000/api/product/updateProduct/${selectedProduct._id}`,
+          `https://designdrip-v1.onrender.com/api/product/updateProduct/${selectedProduct._id}`,
           formData,
           {
             headers: {

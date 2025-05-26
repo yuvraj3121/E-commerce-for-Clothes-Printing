@@ -12,7 +12,7 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
     const fetchApiProduct = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/product/allProduct")
+          .get("https://designdrip-v1.onrender.com/api/product/allProduct")
           .then((res) => {
             // console.log(res.data.products);
             setAllProduct(res.data.products);

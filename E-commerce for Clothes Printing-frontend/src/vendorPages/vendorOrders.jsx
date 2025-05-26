@@ -10,7 +10,9 @@ const VendorOrders = () => {
   useEffect(() => {
     const fetchAllOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/order/allOrder");
+        const res = await axios.get(
+          "https://designdrip-v1.onrender.com/api/order/allOrder"
+        );
         setAllOrders(
           res.data.orders.filter((order) => order.status !== "Pending")
         );

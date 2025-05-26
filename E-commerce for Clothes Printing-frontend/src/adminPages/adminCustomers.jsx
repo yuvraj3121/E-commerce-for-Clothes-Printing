@@ -7,7 +7,7 @@ const AdminCustomers = () => {
   useEffect(() => {
     const getUsers = async () => {
       await axios
-        .get("http://localhost:8000/api/user/allUsers")
+        .get("https://designdrip-v1.onrender.com/api/user/allUsers")
         .then((res) => setAllUsers(res.data.users))
         .catch((err) => console.log(err));
     };

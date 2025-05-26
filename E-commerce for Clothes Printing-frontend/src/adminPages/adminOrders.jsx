@@ -10,7 +10,7 @@ const AdminOrders = () => {
     const fetchAllOrders = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/order/allOrder")
+          .get("https://designdrip-v1.onrender.com/api/order/allOrder")
           .then((res) => setAllOrders(res.data))
           .catch((err) => console.log(err));
       } catch (error) {

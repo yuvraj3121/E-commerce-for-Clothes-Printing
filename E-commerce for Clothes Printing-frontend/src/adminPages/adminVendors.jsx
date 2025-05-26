@@ -15,7 +15,7 @@ const AdminVendors = () => {
     const fetchAllVendors = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8000/api/vendor/AllVendors"
+          "https://designdrip-v1.onrender.com/api/vendor/AllVendors"
         );
         setAllVendors(
           res.data.vendors.filter((vendor) => vendor.status === "accepted")
@@ -30,7 +30,9 @@ const AdminVendors = () => {
   const handleViewDetails = async (vendorId) => {
     try {
       await axios
-        .get(`http://localhost:8000/api/vendor/vendorData/${vendorId}`)
+        .get(
+          `https://designdrip-v1.onrender.com/api/vendor/vendorData/${vendorId}`
+        )
         .then((res) => {
           setVendorData(res.data.vendor);
           setViewDetails(true);

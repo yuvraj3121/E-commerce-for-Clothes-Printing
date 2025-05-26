@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const getUsers = async () => {
       await axios
-        .get("http://localhost:8000/api/user/allUsers")
+        .get("https://designdrip-v1.onrender.com/api/user/allUsers")
         .then((res) => setUsersData(res.data))
         .catch((err) => console.log(err));
     };
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     const fetchAllProduct = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/product/allProduct")
+          .get("https://designdrip-v1.onrender.com/api/product/allProduct")
           .then((res) => {
             setAllProduct(res.data);
           })
@@ -37,7 +37,9 @@ const AdminDashboard = () => {
 
     const fetchAllOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/order/allOrder");
+        const res = await axios.get(
+          "https://designdrip-v1.onrender.com/api/order/allOrder"
+        );
         const orders = res.data.orders;
         setAllOrders({ orders });
 
@@ -58,7 +60,7 @@ const AdminDashboard = () => {
     const fetchAllVendors = async () => {
       try {
         await axios
-          .get("http://localhost:8000/api/vendor/AllVendors")
+          .get("https://designdrip-v1.onrender.com/api/vendor/AllVendors")
           .then((res) => {
             setAllVendors(res.data);
           })
