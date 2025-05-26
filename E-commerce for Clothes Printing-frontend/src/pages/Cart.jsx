@@ -36,7 +36,7 @@ const Cart = ({}) => {
       }
     };
     fetchCartItems();
-  }, [user._id]);
+  }, []);
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price, 0);
@@ -88,7 +88,7 @@ const Cart = ({}) => {
         <div className="max-w-[1200px] mx-auto p-5">
           <h1 className="text-2xl font-semibold mb-6">Your Shopping Cart</h1>
 
-          {cartItems.length === 0 ? (
+          {cartItems?.length === 0 ? (
             <div className="text-center py-10">
               <p className="mb-4">Your cart is empty</p>
               <button
@@ -101,7 +101,7 @@ const Cart = ({}) => {
           ) : (
             <div className="flex flex-col md:flex-row gap-8">
               <div className="flex-1">
-                {cartItems.map((item) => (
+                {cartItems?.map((item) => (
                   <div
                     key={item._id}
                     className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"

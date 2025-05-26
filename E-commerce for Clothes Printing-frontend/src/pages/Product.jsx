@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,8 +10,7 @@ import Header from "../components/header/Header.jsx";
 import axios from "axios";
 
 const Product = () => {
-  const { user } = useContext(AuthContext);
-  // console.log(user);
+  const [user, setUser] = useState(null);
   const { selectedProduct } = useSelector((state) => state.product);
   const [sizes, setSize] = useState([
     { size: "S", quantity: 0 },
@@ -151,6 +150,26 @@ const Product = () => {
     }
   };
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "http://localhost:8000/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+        }
+      } catch (err) {
+        localStorage.removeItem("token");
+      }
+    };
+    checkAuth();
+  }, []);
+
   return (
     <>
       <Header />
@@ -199,10 +218,11 @@ const Product = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select</option>
-                <option value="white">White</option>
-                <option value="black">Black</option>
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
+                {selectedProduct.colors.map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
               </select>
             </div>
 

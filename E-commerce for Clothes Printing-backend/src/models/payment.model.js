@@ -1,9 +1,12 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const paymentSchema = new Schema(
+const paymentSchema = new mongoose.Schema(
   {
+    orderId: {
+      type: String,
+    },
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -11,19 +14,22 @@ const paymentSchema = new Schema(
       type: Number,
       required: true,
     },
-    paymentIntentId: {
+    paymentMethod: {
       type: String,
-      required: true,
+    },
+    razorpayPaymentId: {
+      type: String,
+    },
+    razorpayOrderId: {
+      type: String,
     },
     status: {
       type: String,
-      enum: ["succeeded", "pending", "failed"],
-      default: "pending",
+      enum: ["Pending", "Paid", "Failed"],
+      default: "Pending",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export const Payement = mongoose.model("Payment", paymentSchema);
+export const Payment = mongoose.model("Payment", paymentSchema);

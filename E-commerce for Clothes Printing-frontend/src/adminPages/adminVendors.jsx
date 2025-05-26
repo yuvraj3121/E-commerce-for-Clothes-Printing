@@ -85,7 +85,7 @@ const AdminVendors = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {allVendors.length != 0 &&
+                    {allVendors?.length != 0 &&
                       allVendors?.map((vendor) => (
                         <tr key={vendor._id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
@@ -129,26 +129,26 @@ const AdminVendors = () => {
                 </button>
               </div>
               <div className="text-left flex flex-col gap-2">
-                <p>Full Name : {vendorData.fullName}</p>
-                <p>Email : {vendorData.email}</p>
-                <p>Phone no. : {vendorData.phone}</p>
-                <p>Business Name : {vendorData.businessName}</p>
+                <p>Full Name : {vendorData?.fullName}</p>
+                <p>Email : {vendorData?.email}</p>
+                <p>Phone no. : {vendorData?.phone}</p>
+                <p>Business Name : {vendorData?.businessName}</p>
                 <div className="flex gap-2">
                   <label>Printing Type : </label>
-                  {vendorData.printingType.map((type) => (
+                  {vendorData?.printingType.map((type) => (
                     <p key={type}>{type}</p>
                   ))}
                 </div>
                 <div className="flex gap-2">
                   <label>Services : </label>
-                  {vendorData.services.map((service) => (
+                  {vendorData?.services.map((service) => (
                     <p key={service}>{service}</p>
                   ))}
                 </div>
                 <p>
-                  Address : {vendorData.address.streetAddress},{" "}
-                  {vendorData.address.city}, {vendorData.address.state} {"("}
-                  {vendorData.address.zipCode}
+                  Address : {vendorData?.address.streetAddress},{" "}
+                  {vendorData?.address.city}, {vendorData?.address.state} {"("}
+                  {vendorData?.address.zipCode}
                   {")"}
                 </p>
               </div>

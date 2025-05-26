@@ -1,11 +1,44 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const OrderDetails = () => {
   const { selectedOrder } = useSelector((state) => state.orders);
-  console.log(selectedOrder);
+  // console.log(selectedOrder.orderId);
   const navigate = useNavigate();
+  const [status, setStatus] = useState(null);
+
+  const handleCancel = async () => {
+    try {
+      await axios
+        .patch(
+          `http://localhost:8000/api/order/updateStatus/${selectedOrder.orderId}`,
+          {
+            status: "Cancelled",
+          }
+        )
+        .then((res) => console.log(res.data));
+      setStatus("Cancelled");
+      alert("Order Cancelled.");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/order/orderDetails/${selectedOrder.orderId}`
+        );
+        setStatus(res.data.order.status);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchOrder();
+  }, []);
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -41,19 +74,33 @@ const OrderDetails = () => {
             </ul>
           </div>
 
-          <div className="bg-green-500 text-left p-4 mb-4">
-            <p>
-              Delivered on{" "}
-              {(() => {
-                const date = new Date(selectedOrder.orderedOn);
-                date.setDate(date.getDate() + 10);
-                return date.toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                });
-              })()}
-            </p>
+          <div className=" ">
+            {status == "Delivered" && (
+              <p className="bg-green-500 text-left p-4 mb-4">
+                Delivered on{" "}
+                {(() => {
+                  const date = new Date(selectedOrder.orderedOn);
+                  date.setDate(date.getDate() + 10);
+                  return date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  });
+                })()}
+              </p>
+            )}
+            {status == "Shipped" && (
+              <p className="bg-blue-500 text-left p-4 mb-4">Shipped</p>
+            )}
+            {status == "Cancelled" && (
+              <p className="bg-red-500 text-left p-4 mb-4">Cancelled</p>
+            )}
+            {status == "Pending" && (
+              <p className="bg-yellow-500 text-left p-4 mb-4">Pending</p>
+            )}
+            {selectedOrder.status == "Under Process" && (
+              <p className="bg-yellow-500 text-left p-4 mb-4">Under Process</p>
+            )}
           </div>
 
           <div className="mb-4 bg-gray-100 text-left p-5">
@@ -75,6 +122,14 @@ const OrderDetails = () => {
               Total Price: ₹{selectedOrder.price}
             </h3>
           </div>
+          {status == "Pending" && (
+            <button
+              className="mt-4 p-2 bg-red-200 hover:bg-red-500"
+              onClick={handleCancel}
+            >
+              Cancel Order
+            </button>
+          )}
         </div>
       </div>
     </div>

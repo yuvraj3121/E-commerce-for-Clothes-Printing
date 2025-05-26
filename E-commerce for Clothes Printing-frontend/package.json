@@ -17,6 +17,7 @@
     "axios": "^1.9.0",
     "downloadjs": "^1.4.7",
     "html-to-image": "^1.11.13",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.511.0",
     "react": "^19.0.0",
     "react-color": "^2.19.3",

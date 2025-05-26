@@ -31,6 +31,10 @@ const orderSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "VendorApplication",
     },
+    payment: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
+    },
   },
   {
     timestamps: true,

@@ -19,6 +19,7 @@ import AdminDashboard from "./adminPages/adminHome";
 import AdminHome from "./adminPages/adminHome";
 import VendorApplication from "./pages/VendorApplication";
 import VendorHome from "./vendorPages/vendorHome";
+import ChoicePage from "./pages/ChoicePage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/orderDetails" element={<OrderDetails />} />
         <Route path="/adminHome" element={<AdminHome />} />
         <Route path="/vendorHome" element={<VendorHome />} />
+        <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vendorApplication" element={<VendorApplication />} />
       </Routes>
     </div>

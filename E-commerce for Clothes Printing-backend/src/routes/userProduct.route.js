@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUserProduct,
   deleteUserProduct,
+  getProductById,
 } from "../controllers/userProduct.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -25,6 +26,7 @@ router.post(
   },
   createUserProduct
 );
+router.get("/getProductById/:productId", getProductById);
 router.delete("/deleteUserProduct/:id", deleteUserProduct);
 
 export default router;

@@ -1,26 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 
 const VendorApplication = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const userId = user._id;
-  console.log("userid", user);
-  // useEffect(() => {
-  //   const fetchVendor = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         `http://localhost:8000/api/vendor/vendorDataByUserId/${userId}`
-  //       );
-  //       console.log(res.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchVendor();
-  // }, []);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "http://localhost:8000/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+        }
+      } catch (err) {
+        localStorage.removeItem("token");
+      }
+    };
+    checkAuth();
+  }, []);
 
   const [vendor, setVendor] = useState({
     fullName: "",
@@ -101,7 +105,7 @@ const VendorApplication = () => {
 
     try {
       await axios.post(
-        `http://localhost:8000/api/vendor/registerVendor/${userId}`,
+        `http://localhost:8000/api/vendor/registerVendor/${user._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { toPng } from "html-to-image";
-import download from "downloadjs";
+import html2canvas from "html2canvas";
 import {
   DndContext,
   useDraggable,
@@ -10,8 +10,7 @@ import {
 } from "@dnd-kit/core";
 import "./Customization.css";
 import { useNavigate } from "react-router-dom";
-import { batch, useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
@@ -119,11 +118,9 @@ const DraggableDiv = ({
 };
 
 const Customization = () => {
-  const { user } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
   const { selectedProduct } = useSelector((state) => state.product);
   let productData = selectedProduct;
-  console.log(productData);
-  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const [frontImagePosition, setFrontImagePosition] = useState({
@@ -164,10 +161,10 @@ const Customization = () => {
   ]);
   const [side, setSide] = useState("front");
   const [color, setColor] = useState("");
-  // const [frontImage, setFrontImage] = useState(null);
-  // const [backImage, setBackImage] = useState(null);
   const frontCanvasRef = useRef(null);
   const backCanvasRef = useRef(null);
+  const [frontFile, setFrontFile] = useState(null);
+  const [backFile, setBackFile] = useState(null);
 
   const handleFrontDesignUpload = (e) => {
     const file = e.target.files[0];
@@ -233,44 +230,36 @@ const Customization = () => {
     }
   };
 
-  const handleFrontDownload = () => {
-    if (frontCanvasRef.current) {
-      toPng(frontCanvasRef.current)
-        .then((dataUrl) => {
-          download(dataUrl, "custom-tshirt-front-design.png");
-        })
-        .catch((err) => {
-          console.error("Failed to download image", err);
-        });
+  const hanldeFrontSave = async () => {
+    if (frontDesignFile || frontText != "") {
+      const previewFront = document.getElementById("mainFrontImg");
+      const frontCanvas = await html2canvas(previewFront, { useCORS: true });
+      const frontDataUrl = frontCanvas.toDataURL("front-customized-Img/png");
+      const frontBlob = await (await fetch(frontDataUrl)).blob();
+      const frontFile = new File([frontBlob], "front-custom-tshirt", {
+        type: "front-customized-Img/png",
+      });
+      setFrontFile(frontFile);
     }
+    console.log(frontFile);
+  };
+
+  const handleBackSave = async () => {
+    if (backDesignFile || backText != "") {
+      const previewBack = document.getElementById("mainBackImg");
+      const backCanvas = await html2canvas(previewBack, { useCORS: true });
+      const backDataUrl = backCanvas.toDataURL("back-customized-Img/png");
+      const backBlob = await (await fetch(backDataUrl)).blob();
+      const backFile = new File([backBlob], "back-custom-tshirt", {
+        type: "front-customized-Img/png",
+      });
+      setBackFile(backFile);
+    }
+    console.log(backFile);
   };
 
   const frontFileInputRef = useRef(null);
-
-  const handleBackDownload = () => {
-    if (backCanvasRef.current) {
-      toPng(backCanvasRef.current)
-        .then((dataUrl) => {
-          download(dataUrl, "custom-tshirt-back-design.png");
-        })
-        .catch((err) => {
-          console.error("Failed to download image", err);
-        });
-    }
-  };
-
   const backFileInputRef = useRef(null);
-
-  function dataURLtoBlob(dataURL) {
-    const byteString = atob(dataURL.split(",")[1]);
-    const mimeString = dataURL.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  }
 
   const handleAddToCart = async () => {
     if (!color) {
@@ -284,55 +273,6 @@ const Customization = () => {
     }
 
     const totalQuantity = sizes.reduce((acc, item) => acc + item.quantity, 0);
-
-    let frontImage = null;
-    let backImage = null;
-
-    try {
-      if (frontCanvasRef.current) {
-        const dataUrl = await toPng(frontCanvasRef.current);
-        frontImage = dataURLtoBlob(dataUrl);
-      }
-
-      if (backCanvasRef.current) {
-        const dataUrl = await toPng(backCanvasRef.current);
-        backImage = dataURLtoBlob(dataUrl);
-      }
-    } catch (error) {
-      console.error("Error generating images:", error);
-      alert("Error while generating custom T-shirt images.");
-      return;
-    }
-    // console.log(URL.createObjectURL(frontImage));
-
-    const cartItem = {
-      id: Date.now(),
-      productName: selectedProduct.productName,
-      category: selectedProduct.category,
-      productImage: [
-        {
-          side: "Front",
-          // url: URL.createObjectURL(frontImage) || selectedProduct.image[0].url,
-          url: selectedProduct.productImage[0].url,
-        },
-        {
-          side: "Back",
-          // url: URL.createObjectURL(backImage) || selectedProduct.image[1].url,
-          url: selectedProduct.productImage[1].url,
-        },
-      ],
-      frontDesign: { url: frontDesign, text: frontText },
-      backDesign: { url: backDesign, text: backText },
-      sizes: sizes,
-      color: color,
-      quantity: totalQuantity,
-      price: selectedProduct.price * totalQuantity,
-    };
-
-    // console.log("Cart Item:", cartItem);
-    dispatch(addToCart(cartItem));
-    // alert("Added to cart!");
-    // navigate("/");
 
     const formData = new FormData();
     formData.append("productName", productData.productName);
@@ -352,6 +292,12 @@ const Customization = () => {
     if (backDesignFile) {
       formData.append("backDesignImage", backDesignFile);
     }
+    if (frontFile) {
+      formData.append("customizedFrontImage", frontFile);
+    }
+    if (backFile) {
+      formData.append("customizedBackImage", backFile);
+    }
 
     try {
       const res = await axios.post(
@@ -364,7 +310,6 @@ const Customization = () => {
         }
       );
 
-      console.log(res.data);
       const createdProduct = res.data.product;
 
       await axios.post("http://localhost:8000/api/cart/addToCart", {
@@ -379,6 +324,26 @@ const Customization = () => {
       alert("Error adding to cart or creating product.");
     }
   };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "http://localhost:8000/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+        }
+      } catch (err) {
+        localStorage.removeItem("token");
+      }
+    };
+    checkAuth();
+  }, []);
 
   return (
     <div className="cus-container">
@@ -397,7 +362,7 @@ const Customization = () => {
           style={{ display: side === "front" ? "flex" : "none" }}
         >
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div ref={frontCanvasRef} id="mainImg" className="mainImgDiv">
+            <div ref={frontCanvasRef} id="mainFrontImg" className="mainImgDiv">
               <img
                 src={selectedProduct.productImage[0].url}
                 alt="T-shirt"
@@ -431,6 +396,12 @@ const Customization = () => {
                 color={frontTextColor}
               />
             </div>
+            <button
+              onClick={hanldeFrontSave}
+              className="absolute top-[570px] left-[870px] p-2"
+            >
+              Save
+            </button>
           </DndContext>
           <div className="toolsDiv">
             <h3>Tools</h3>
@@ -505,13 +476,6 @@ const Customization = () => {
                   onChange={(e) => setFrontTextColor(e.target.value)}
                 />
               </div>
-              {/* <button
-                className="bg-green-200 hover:bg-green-600 p-1"
-                onClick={handleFrontDownload}
-                style={{ marginTop: "10px" }}
-              >
-                Download Design
-              </button> */}
             </div>
           </div>
         </div>
@@ -521,7 +485,7 @@ const Customization = () => {
           style={{ display: side === "back" ? "flex" : "none" }}
         >
           <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div ref={backCanvasRef} id="mainImg" className="mainImgDiv">
+            <div ref={backCanvasRef} id="mainBackImg" className="mainImgDiv">
               <img
                 src={selectedProduct.productImage[1].url}
                 alt="T-shirt"
@@ -554,6 +518,12 @@ const Customization = () => {
                 color={backTextColor}
               />
             </div>
+            <button
+              onClick={handleBackSave}
+              className="absolute top-[570px] left-[870px] p-2"
+            >
+              Save
+            </button>
           </DndContext>
           <div className="toolsDiv">
             <h3>Tools</h3>
@@ -628,13 +598,6 @@ const Customization = () => {
                   onChange={(e) => setBackTextColor(e.target.value)}
                 />
               </div>
-              {/* <button
-                className="bg-green-200 hover:bg-green-600 p-1"
-                onClick={handleBackDownload}
-                style={{ marginTop: "10px" }}
-              >
-                Download Design
-              </button> */}
             </div>
           </div>
         </div>

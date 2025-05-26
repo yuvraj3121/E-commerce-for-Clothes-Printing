@@ -6,7 +6,7 @@ import productRoutes from "./routes/product.route.js";
 import orderRoutes from "./routes/order.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import vendorRoutes from "./routes/vendorApplication.route.js";
-// import paymentRoutes from "./routes/payment.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 
 const app = express();
 app.use(
@@ -23,6 +23,6 @@ app.use("/api/product", productRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/vendor", vendorRoutes);
-// app.use("/api/payment", paymentRoutes);
+app.use("/api/payment", paymentRoutes);
 
 export { app };

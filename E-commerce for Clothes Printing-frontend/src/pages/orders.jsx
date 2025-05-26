@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { setSelectedOrder } from "../features/ordersSlice";
 import axios from "axios";
 
-const Orders = ({}) => {
-  const { user } = useContext(AuthContext);
+const Orders = () => {
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -14,25 +14,35 @@ const Orders = ({}) => {
   const [userOrders, setUserOrders] = useState(null);
 
   useEffect(() => {
-    if (!user?._id) return;
-
-    const fetchUserOrders = async () => {
+    const checkAuth = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/order/userOrder/${user._id}`
-        );
-        const orders = res.data.orders.map((order) => ({
-          orderedOn: order.createdAt,
-          ...order,
-        }));
-        setUserOrders(orders);
-      } catch (error) {
-        console.log(error);
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get(
+            "http://localhost:8000/api/user/profile",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setUser(res.data.user);
+          await axios
+            .get(
+              `http://localhost:8000/api/order/userOrder/${res.data.user._id}`
+            )
+            .then((res) => {
+              const orders = res.data.orders.map((order) => ({
+                orderedOn: order.createdAt,
+                ...order,
+              }));
+              setUserOrders(orders);
+            });
+        }
+      } catch (err) {
+        localStorage.removeItem("token");
       }
     };
-
-    fetchUserOrders();
-  }, [user]);
+    checkAuth();
+  }, []);
 
   return (
     <>
@@ -73,49 +83,61 @@ const Orders = ({}) => {
               <div className="flex-col">
                 {userOrders?.map((order) =>
                   order.product.map((item) => (
-                    <div
-                      key={item._id}
-                      className="w-[700px] bg-gray-100 flex flex-row justify-between items-center border border-gray-300 rounded p-4 mb-5"
-                    >
-                      <img
-                        src={item.productImage[0]?.url}
-                        alt={item.productName}
-                        className="w-32 h-32 object-contain rounded"
-                      />
-                      <div className="flex-col">
-                        <h3 className="font-medium text-lg mb-1">
-                          {item.productName}
-                        </h3>
-                        <p className="text-sm font-semibold">
-                          Ordered on{" "}
-                          {new Date(order.orderedOn).toLocaleDateString(
-                            "en-GB",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            }
-                          )}
-                        </p>
+                    <div key={item._id} className="w-[700px] ">
+                      <div
+                        className={`text-left rounded-t-lg px-2 ${
+                          order.status == "Delivered"
+                            ? "bg-green-400"
+                            : order.status == "Shipped"
+                            ? "bg-blue-400"
+                            : order.status == "Cancelled"
+                            ? "bg-red-400"
+                            : "bg-yellow-400"
+                        }`}
+                      >
+                        {order.status}
                       </div>
-                      <div className="flex-row">
-                        <p
-                          className="w-max cursor-pointer hover:text-blue-400 hover:bg-blue-50"
-                          onClick={() => {
-                            navigate("/orderDetails");
-                            dispatch(
-                              setSelectedOrder({
-                                status: order.status,
-                                orderedOn: order.orderedOn,
-                                userDetails: order.deliveryAddress,
-                                ...item,
-                              })
-                            );
-                            // console.log(selectedOrder);
-                          }}
-                        >
-                          Order details {" >"}
-                        </p>
+                      <div className="bg-gray-100 flex flex-row justify-between items-center border border-gray-300 rounded-b-lg p-4 mb-5">
+                        <img
+                          src={item.productImage[0]?.url}
+                          alt={item.productName}
+                          className="w-32 h-32 object-contain rounded"
+                        />
+                        <div className="flex-col">
+                          <h3 className="font-medium text-lg mb-1">
+                            {item.productName}
+                          </h3>
+                          <p className="text-sm font-semibold">
+                            Ordered on{" "}
+                            {new Date(order.orderedOn).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )}
+                          </p>
+                        </div>
+                        <div className="flex-row">
+                          <p
+                            className="w-max cursor-pointer hover:text-blue-400 hover:bg-blue-50"
+                            onClick={() => {
+                              navigate("/orderDetails");
+                              dispatch(
+                                setSelectedOrder({
+                                  orderId: order._id,
+                                  status: order.status,
+                                  orderedOn: order.orderedOn,
+                                  userDetails: order.deliveryAddress,
+                                  ...item,
+                                })
+                              );
+                            }}
+                          >
+                            Order details {" >"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))

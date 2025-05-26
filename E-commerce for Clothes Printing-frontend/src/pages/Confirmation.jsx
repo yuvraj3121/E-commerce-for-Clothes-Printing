@@ -16,59 +16,59 @@ const Confirmation = () => {
   // const { cartItems } = useSelector((state) => state.cart);
   const { userDetails } = useSelector((state) => state.shippingDetails);
 
-  useEffect(() => {
-    const init = async () => {
-      setShowConfetti(true);
-      const date = new Date();
-      const formattedDate = date
-        .toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-        .replace(",", "");
+  // useEffect(() => {
+  //   const init = async () => {
+  //     setShowConfetti(true);
+  //     const date = new Date();
+  //     const formattedDate = date
+  //       .toLocaleDateString("en-US", {
+  //         day: "numeric",
+  //         month: "long",
+  //         year: "numeric",
+  //       })
+  //       .replace(",", "");
 
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/api/cart/userCart/${user._id}`
-        );
+  //     try {
+  //       const res = await axios.get(
+  //         `http://localhost:8000/api/cart/userCart/${user._id}`
+  //       );
 
-        const items = res.data.map((cart) => ({
-          cartId: cart._id,
-          ...cart.product,
-        }));
+  //       const items = res.data.map((cart) => ({
+  //         cartId: cart._id,
+  //         ...cart.product,
+  //       }));
 
-        setCartItems(items);
+  //       setCartItems(items);
 
-        items.forEach((item) => {
-          dispatch(
-            addToOrders({
-              ...item,
-              userDetails: userDetails,
-              orderedOn: formattedDate,
-            })
-          );
-        });
+  //       items.forEach((item) => {
+  //         dispatch(
+  //           addToOrders({
+  //             ...item,
+  //             userDetails: userDetails,
+  //             orderedOn: formattedDate,
+  //           })
+  //         );
+  //       });
 
-        const productIds = items.map((item) => item._id);
-        await axios.post("http://localhost:8000/api/order/createOrder", {
-          customerId: user._id,
-          product: productIds,
-          deliveryAddress: userDetails,
-        });
+  //       const productIds = items.map((item) => item._id);
+  //       await axios.post("http://localhost:8000/api/order/createOrder", {
+  //         customerId: user._id,
+  //         product: productIds,
+  //         deliveryAddress: userDetails,
+  //       });
 
-        await axios.delete(
-          `http://localhost:8000/api/cart/deleteUserCart/${user._id}`
-        );
+  //       await axios.delete(
+  //         `http://localhost:8000/api/cart/deleteUserCart/${user._id}`
+  //       );
 
-        dispatch(clearCart());
-      } catch (err) {
-        console.error("Error in order creation:", err);
-      }
-    };
+  //       dispatch(clearCart());
+  //     } catch (err) {
+  //       console.error("Error in order creation:", err);
+  //     }
+  //   };
 
-    init();
-  }, []);
+  //   init();
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex items-center justify-center px-4">

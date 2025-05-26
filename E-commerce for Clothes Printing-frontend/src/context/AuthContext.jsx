@@ -42,11 +42,12 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
+      console.log(res.data.user);
 
       if (res.data.user.role === "admin") {
         navigate("/adminHome");
       } else if (res.data.user.role === "vendor") {
-        navigate("/vendorHome");
+        navigate("/choicePage");
       } else {
         navigate("/");
       }

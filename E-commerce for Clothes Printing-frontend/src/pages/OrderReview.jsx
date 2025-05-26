@@ -10,10 +10,17 @@ const OrderReview = () => {
   const { userDetails } = useSelector((state) => state.shippingDetails);
   const { totalAmount } = useSelector((state) => state.cart);
   const [cartItems, setCartItems] = useState([]);
-  // console.log(userDetails);
 
   useEffect(() => {
     const fetchCartItems = async () => {
+      if (!window.Razorpay) {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        script.onload = () => console.log("Razorpay SDK Loaded");
+        document.body.appendChild(script);
+      }
+
       try {
         const res = await axios.get(
           `http://localhost:8000/api/cart/userCart/${user._id}`
@@ -30,8 +37,68 @@ const OrderReview = () => {
     fetchCartItems();
   }, [user._id]);
 
-  const handlePlaceOrder = () => {
-    navigate("/payment");
+  const handlePlaceOrder = async () => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/api/payment/processPayment",
+        {
+          amount: totalAmount,
+          userId: user._id,
+        }
+      );
+
+      const options = {
+        key: data.razorpayKey,
+        currency: "INR",
+        name: "Design Drip",
+        description: "Test transaction",
+        order_id: data.order.id,
+        handler: async function (response) {
+          console.log("Payment Response:", response);
+          const { data: verifiedPayment } = await axios.post(
+            "http://localhost:8000/api/payment/verifyPayment",
+            {
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+              userId: user._id,
+            }
+          );
+
+          const productIds = cartItems.map((item) => item._id);
+          const res = await axios.post(
+            "http://localhost:8000/api/order/createOrder",
+            {
+              customerId: user._id,
+              product: productIds,
+              deliveryAddress: userDetails,
+              payment: verifiedPayment.payment._id,
+            }
+          );
+
+          const { data: paymentDetails } = await axios.patch(
+            `http://localhost:8000/api/payment/updatePaymentMethod`,
+            {
+              id: verifiedPayment.payment._id,
+              paymentId: response.razorpay_payment_id,
+              orderId: res.data.order._id,
+            }
+          );
+          console.log("Payment details :", paymentDetails);
+
+          await axios.delete(
+            `http://localhost:8000/api/cart/deleteUserCart/${user._id}`
+          );
+          window.location.href = "/";
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Payment Error:", error);
+      alert("Payment failed.");
+    }
   };
 
   const handleBack = () => {
@@ -56,35 +123,35 @@ const OrderReview = () => {
           <div className="grid gap-2">
             <div className="flex gap-2">
               <strong className="w-32">Name:</strong>
-              <span>{userDetails.fullName}</span>
+              <span>{userDetails?.fullName}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">Email:</strong>
-              <span>{userDetails.email}</span>
+              <span>{userDetails?.email}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">Phone:</strong>
-              <span>{userDetails.phone}</span>
+              <span>{userDetails?.phone}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">Address:</strong>
-              <span>{userDetails.address}</span>
+              <span>{userDetails?.address}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">City:</strong>
-              <span>{userDetails.city}</span>
+              <span>{userDetails?.city}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">State:</strong>
-              <span>{userDetails.state}</span>
+              <span>{userDetails?.state}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">Zip Code:</strong>
-              <span>{userDetails.zip}</span>
+              <span>{userDetails?.zip}</span>
             </div>
             <div className="flex gap-2">
               <strong className="w-32">Country:</strong>
-              <span>{userDetails.country}</span>
+              <span>{userDetails?.country}</span>
             </div>
           </div>
         </div>
@@ -92,7 +159,7 @@ const OrderReview = () => {
         <div>
           <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
           <ul className="space-y-4">
-            {cartItems.map((item) => (
+            {cartItems?.map((item) => (
               <div
                 key={item.id}
                 className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"
@@ -135,7 +202,7 @@ const OrderReview = () => {
               onClick={handlePlaceOrder}
               className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
             >
-              Proceed to Payment
+              Proceed to Pay
             </button>
           </div>
         </div>

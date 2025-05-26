@@ -25,7 +25,7 @@ const ProductGrid = ({ products, loading, onAddToCart, onToggleWishlist }) => {
     fetchApiProduct();
   }, []);
 
-  const productsByCategory = allProduct.reduce((acc, product) => {
+  const productsByCategory = allProduct?.reduce((acc, product) => {
     const category = product.category;
     if (!acc[category]) {
       acc[category] = [];

@@ -96,7 +96,7 @@ const AdminProducts = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {allProduct.map((product) => (
+                  {allProduct?.map((product) => (
                     <tr key={product._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
                         {product._id}

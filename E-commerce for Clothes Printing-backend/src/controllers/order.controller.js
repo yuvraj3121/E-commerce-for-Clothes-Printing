@@ -2,16 +2,17 @@ import { Order } from "../models/order.model.js";
 
 const createOrder = async (req, res) => {
   try {
-    const { customerId, product, deliveryAddress } = req.body;
+    const { customerId, product, deliveryAddress, payment } = req.body;
 
-    if (!customerId || !product || !deliveryAddress) {
-      return res.status(400).json({ message: "All fields are required." });
+    if (!customerId || !product || !deliveryAddress || !payment) {
+      return res.status(400).json({ message: "All datas are required." });
     }
 
     const newOrder = await Order.create({
       customer: customerId,
       product: product,
       deliveryAddress,
+      payment,
     });
 
     return res.status(201).json({
@@ -29,6 +30,7 @@ const getAllOrder = async (req, res) => {
     const orders = await Order.find()
       .populate("customer")
       .populate("product")
+      .populate("payment")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -49,6 +51,7 @@ const getUserOrders = async (req, res) => {
     const orders = await Order.find({ customer: userId })
       .populate("customer", "-password")
       .populate("product")
+      .populate("payment")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -68,7 +71,8 @@ const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(orderId)
       .populate("customer")
-      .populate("product");
+      .populate("product")
+      .populate("payment");
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });

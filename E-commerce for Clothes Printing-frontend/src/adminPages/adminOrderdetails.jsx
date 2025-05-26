@@ -6,8 +6,10 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
   const [customerDetails, setCustomerDetails] = useState(null);
   const [productDetails, setProductDetails] = useState(null);
   const [deliveryAddress, setDeliveryAddress] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState(null);
   const [showVendors, setShowVendors] = useState(false);
   const [allVendors, setAllVendors] = useState([]);
+  const [status, setStatus] = useState(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -19,13 +21,17 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
         setCustomerDetails(res.data.order.customer || {});
         setProductDetails(res.data.order.product || {});
         setDeliveryAddress(res.data.order.deliveryAddress || {});
+        setPaymentDetails(res.data.order.payment || {});
+        setStatus(res.data.order.status);
+        console.log(res.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOrder();
-    console.log(orderDetails);
   }, [orderId]);
+
+  console.log(orderDetails);
 
   const handleFindVendor = async () => {
     setShowVendors(true);
@@ -76,20 +82,22 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
       </div>
 
       <div className="flex justify-between mb-2">
-        {orderDetails?.status && (
+        {status && (
           <div
             className={`w-[200px] ml-2 rounded-lg p-3 ${
-              orderDetails.status === "Delivered"
+              status === "Delivered"
                 ? "bg-green-500"
-                : orderDetails.status === "Shipped"
+                : status === "Shipped"
                 ? "bg-blue-500"
+                : status === "Cancelled"
+                ? "bg-red-500"
                 : "bg-yellow-500"
             }`}
           >
-            Status: {orderDetails.status}
+            Status: {status}
           </div>
         )}
-        {orderDetails?.status == "Pending" ? (
+        {status == "Pending" ? (
           <button
             className="cursor-pointer mr-2 text-blue-400 hover:text-blue-700 p-2 hover:bg-blue-100 rounded-lg"
             onClick={handleFindVendor}
@@ -167,22 +175,30 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
         </div>
       )}
       <div className="flex flex-col gap-2 w-full">
-        <div className="flex gap-2">
-          <div className="bg-white text-left rounded-lg px-2 py-2 w-[49%] ml-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-2 mr-2">
+          <div className="bg-white text-left rounded-lg px-2 py-2 ml-2 ">
             <h2 className="font-bold text-lg mb-1">Customer Details</h2>
             <p>FullName : {customerDetails?.fullName}</p>
             <p>Email : {customerDetails?.email}</p>
             <p>Phone no. : {customerDetails?.phoneNumber}</p>
           </div>
-          <div className="bg-white text-left rounded-lg px-2 py-2 w-[49%]">
+          <div className="bg-white text-left rounded-lg px-2 py-2 ">
             <h2 className="font-bold text-lg mb-1">Delivery Address</h2>
             <p>FullName : {deliveryAddress?.fullName}</p>
             <p>Email : {deliveryAddress?.email}</p>
             <p>Phone no. : {deliveryAddress?.phone}</p>
-            <p>Address : {deliveryAddress?.address}</p>
-            <p>City : {deliveryAddress?.city}</p>
-            <p>State : {deliveryAddress?.state}</p>
-            <p>Zip : {deliveryAddress?.zip}</p>
+            <p>
+              Address : {deliveryAddress?.address}, {deliveryAddress?.city},{" "}
+              {deliveryAddress?.state} {"("}
+              {deliveryAddress?.zip}
+              {")"}
+            </p>
+          </div>
+          <div className="bg-white text-left rounded-lg px-2 py-2  ml-2">
+            <h2 className="font-bold text-lg mb-1">Payment Details</h2>
+            <p>Amount : {paymentDetails?.amount}</p>
+            <p>Payment Method : {paymentDetails?.paymentMethod}</p>
+            <p>Status : {paymentDetails?.status}</p>
           </div>
         </div>
         <div className="bg-white text-left rounded-lg px-2 py-2 mx-2">

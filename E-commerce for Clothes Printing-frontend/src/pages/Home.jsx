@@ -103,40 +103,19 @@ const HomePage = () => {
       <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
-            Featured T-Shirts
+            Featured Products
           </h2>
           <p className="text-center text-gray-500 mb-6">
             Browse through our exclusive collection
           </p>
 
-          {/* <div className="flex justify-start mb-6">
-            <button
-              onClick={() => setShowFilters((prev) => !prev)}
-              className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-md text-sm font-medium"
-            >
-              <CiFilter className="text-lg" />
-              Filter
-            </button>
-          </div> */}
-          {/* 
-          {showFilters && (
-            <div className="mb-6">
-              <ProductFilters />
-            </div>
-          )} */}
-
           <ProductGrid
-            products={products}
             loading={loading}
             onAddToCart={handleAddToCart}
             onToggleWishlist={handleToggleWishlist}
           />
         </div>
       </main>
-
-      {/* <div className="bg-blue-600 text-white py-10 mt-12">
-        <Newsletter />
-      </div> */}
 
       <Footer />
     </div>

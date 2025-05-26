@@ -61,9 +61,9 @@ const createUserProduct = async (req, res) => {
     (acc, item) => acc + item.quantity,
     0
   );
-  // console.log(sizes);
 
   console.log("3");
+  // console.log(req.files);
 
   const frontDesignImageLocalPath = req.files?.frontDesignImage?.[0]?.path;
   const backDesignImageLocalPath = req.files?.backDesignImage?.[0]?.path;
@@ -71,9 +71,6 @@ const createUserProduct = async (req, res) => {
     req.files?.customizedFrontImage?.[0]?.path;
   const customizedBackImageLocalPath =
     req.files?.customizedBackImage?.[0]?.path;
-  // console.log("req.files:", req.files);
-  // console.log("front path:", req.files?.frontDesignImage?.[0]?.path);
-  // console.log("back path:", req.files?.backDesignImage?.[0]?.path);
 
   console.log("4");
 
@@ -85,37 +82,25 @@ const createUserProduct = async (req, res) => {
   if (frontDesignImageLocalPath) {
     frontDesignImage = await uploadOnCloudinary(frontDesignImageLocalPath);
   }
+  // console.log(frontDesignImage);
   if (backDesignImageLocalPath) {
     backDesignImage = await uploadOnCloudinary(backDesignImageLocalPath);
   }
+  // console.log(backDesignImage);
   if (customizedFrontImageLocalPath) {
     customizedFrontImage = await uploadOnCloudinary(
       customizedFrontImageLocalPath
     );
   }
+  // console.log(customizedFrontImage);
   if (customizedBackImageLocalPath) {
     customizedBackImage = await uploadOnCloudinary(
       customizedBackImageLocalPath
     );
   }
+  // console.log(customizedBackImage);
 
   console.log("5");
-  // console.log("Creating product with:", {
-  //   productName,
-  //   category,
-  //   price: Number(price),
-  //   productImage: parsedProductImage,
-  //   frontDesignImage: frontDesignImage?.url || "",
-  //   backDesignImage: backDesignImage?.url || "",
-  //   frontDesignText,
-  //   backDesignText,
-  //   customizedFrontImage: customizedFrontImage?.url || null,
-  //   customizedBackImage: customizedBackImage?.url || null,
-  //   printLocation: parsedPrintLocation,
-  //   sizes: parsedSizes,
-  //   color,
-  //   quantity: totalQuantity,
-  // });
 
   try {
     const newProduct = await userProduct.create({
@@ -168,4 +153,22 @@ const deleteUserProduct = async (req, res) => {
   }
 };
 
-export { createUserProduct, deleteUserProduct };
+const getProductById = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await userProduct.findById(productId);
+    if (!product)
+      return res.status(400).json({ message: "Product not found." });
+
+    res.status(200).json({
+      message: "Product fetched successfully",
+      product: product,
+    });
+  } catch (error) {
+    console.log("Error fetching Product : ", error);
+    res.status(500).json({ message: "Error fetching Product." });
+  }
+};
+
+export { createUserProduct, deleteUserProduct, getProductById };

@@ -43,7 +43,7 @@ const AdminDashboard = () => {
 
         const amount = orders.reduce((acc, order) => {
           const orderTotal = order.product.reduce((sum, item) => {
-            return sum + item.price * item.quantity;
+            return sum + item.price;
           }, 0);
           return acc + orderTotal;
         }, 0);
@@ -69,6 +69,8 @@ const AdminDashboard = () => {
     };
     fetchAllVendors();
   }, []);
+
+  console.log(allOrders);
 
   const stats = [
     {
@@ -172,11 +174,7 @@ const AdminDashboard = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹
-                    {order.product.reduce(
-                      (acc, item) => acc + item.price * item.quantity,
-                      0
-                    )}
+                    ₹{order.product.reduce((acc, item) => acc + item.price, 0)}
                   </td>
                 </tr>
               ))}
