@@ -9,15 +9,19 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
   const canvasRef = useRef(null);
 
   const handleDownload = () => {
-    if (canvasRef.current) {
-      toPng(canvasRef.current)
-        .then((dataUrl) => {
-          download(dataUrl, "custom-tshirt.png");
-        })
-        .catch((err) => {
-          console.error("Failed to download image", err);
-        });
-    }
+    setTimeout(() => {
+      if (canvasRef.current) {
+        toPng(canvasRef.current)
+          .then((dataUrl) => {
+            download(dataUrl, "custom-tshirt.png");
+          })
+          .catch((err) => {
+            console.error("Failed to download image", err);
+          });
+      } else {
+        console.error("CanvasRef is null, image might not be loaded yet.");
+      }
+    }, 300);
   };
 
   useEffect(() => {
