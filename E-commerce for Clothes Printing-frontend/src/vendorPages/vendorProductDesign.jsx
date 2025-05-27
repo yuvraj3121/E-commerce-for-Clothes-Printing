@@ -9,19 +9,15 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
   const canvasRef = useRef(null);
 
   const handleDownload = () => {
-    setTimeout(() => {
-      if (canvasRef.current) {
-        toPng(canvasRef.current)
-          .then((dataUrl) => {
-            download(dataUrl, "custom-tshirt.png");
-          })
-          .catch((err) => {
-            console.error("Failed to download image", err);
-          });
-      } else {
-        console.error("CanvasRef is null, image might not be loaded yet.");
-      }
-    }, 300);
+    if (canvasRef.current) {
+      toPng(canvasRef.current)
+        .then((dataUrl) => {
+          download(dataUrl, "custom-tshirt.png");
+        })
+        .catch((err) => {
+          console.error("Failed to download image", err);
+        });
+    }
   };
 
   useEffect(() => {
@@ -80,12 +76,12 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
               Back
             </button>
           </div>
-          <button
+          {/* <button
             onClick={handleDownload}
             className="mt-4 p-2 bg-green-200 hover:text-green-900 hover:bg-green-300"
           >
             Download
-          </button>
+          </button> */}
         </div>
         <div className=" w-full p-2">
           {product?.printLocation?.includes("front") && (
