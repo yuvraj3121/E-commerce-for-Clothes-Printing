@@ -93,7 +93,7 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
                     src={product?.frontDesignImage}
                     className="h-[200px] w-full bg-gray-100 cursor-pointer object-contain"
                     onClick={(e) => {
-                      setImage(e.target.src);
+                      setImage(product?.frontDesignImage);
                     }}
                   />
                 )}
@@ -109,7 +109,7 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
                       src={product?.customizedFrontImage}
                       className="h-[200px] cursor-pointer"
                       onClick={(e) => {
-                        setImage(e.target.src);
+                        setImage(product?.customizedFrontImage);
                       }}
                     />
                   </div>
@@ -126,7 +126,7 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
                     src={product?.backDesignImage}
                     className="h-[200px] w-full cursor-pointer object-contain bg-gray-100"
                     onClick={(e) => {
-                      setImage(e.target.src);
+                      setImage(product?.backDesignImage);
                     }}
                   />
                 )}
@@ -142,7 +142,7 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
                       src={product?.customizedBackImage}
                       className="h-[200px] cursor-pointer"
                       onClick={(e) => {
-                        setImage(e.target.src);
+                        setImage(product?.customizedBackImage);
                       }}
                     />
                   </div>
