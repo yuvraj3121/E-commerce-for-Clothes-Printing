@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -63,9 +64,12 @@ const Login = () => {
         </form>
         <p className="mt-4 text-sm text-center text-gray-600">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 hover:underline">
-            Sign up
-          </a>
+          <span
+            className="text-blue-600 hover:underlin cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up
+          </span>
         </p>
       </div>
     </div>
