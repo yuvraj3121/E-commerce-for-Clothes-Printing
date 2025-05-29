@@ -11,7 +11,7 @@ import paymentRoutes from "./routes/payment.route.js";
 const app = express();
 app.use(
   cors({
-    origin: "https://designdrip-v1.netlify.app",
+    origin: ["https://designdrip-v1.netlify.app", "http://localhost:5173"],
     credentials: true,
   })
 );
