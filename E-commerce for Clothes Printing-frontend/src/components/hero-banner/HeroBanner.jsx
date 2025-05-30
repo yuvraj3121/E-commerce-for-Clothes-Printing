@@ -2,18 +2,16 @@ import React from "react";
 
 const HeroBanner = () => {
   return (
-    <section className="w-full bg-[url('/path-to-your-banner-image.jpg')]  bg-cover bg-center text-white h-[400px] flex items-center justify-center">
-      <div className="text-center bg-black bg-opacity-50 p-6 rounded-lg h-[300px] w-[1000px] flex flex-col justify-center items-center">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-          Summer Polo Collection
-        </h2>
-        <p className="text-lg sm:text-xl mb-6">
-          Premium quality polo t-shirts starting at just ₹599
-        </p>
-        {/* <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-200 transition">
-          Shop Now
-        </button> */}
-      </div>
+    <section className="w-full text-white h-[400px] flex items-center justify-center">
+      <div
+        className="text-center p-6 rounded-lg h-[300px] w-[1000px] flex flex-col justify-center items-center"
+        style={{
+          backgroundImage: "url('/poster.jpg')",
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      ></div>
     </section>
   );
 };
