@@ -11,7 +11,6 @@ import AccountSettings from "./pages/AccountSettings";
 import ScrollToTop from "./ScrollToTop";
 import ShippingDetails from "./pages/ShippingDetails";
 import OrderReview from "./pages/OrderReview";
-import Payment from "./pages/payment";
 import Confirmation from "./pages/Confirmation";
 import Orders from "./pages/orders";
 import OrderDetails from "./pages/orderDetails";
@@ -20,6 +19,7 @@ import AdminHome from "./adminPages/adminHome";
 import VendorApplication from "./pages/VendorApplication";
 import VendorHome from "./vendorPages/vendorHome";
 import ChoicePage from "./pages/ChoicePage";
+import Stores from "./pages/stores";
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
         <Route path="/account-settings" element={<AccountSettings />} />
         <Route path="/shippingDetails" element={<ShippingDetails />} />
         <Route path="/orderReview" element={<OrderReview />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route path="/stores" element={<Stores />} />
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orderDetails" element={<OrderDetails />} />

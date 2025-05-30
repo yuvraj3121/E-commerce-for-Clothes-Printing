@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaFacebookF,
   FaInstagram,
@@ -11,33 +12,73 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleClick = (store) => {
+    localStorage.setItem("store", store);
+    navigate("/stores");
+  };
+
   return (
     <footer className="bg-gray-900 text-white py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-          {/* Shop Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Shop</h3>
+            <h3 className="text-lg font-semibold mb-4">Find Stores</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
-                <a href="#">Men's Polo T-Shirts</a>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleClick("Raipur");
+                  }}
+                >
+                  Raipur
+                </span>
               </li>
               <li>
-                <a href="#">Women's Polo T-Shirts</a>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleClick("Bangalore");
+                  }}
+                >
+                  Bangalore
+                </span>
               </li>
               <li>
-                <a href="#">Kids' Polo T-Shirts</a>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleClick("Mumbai");
+                  }}
+                >
+                  Mumbai
+                </span>
               </li>
               <li>
-                <a href="#">Custom Polo T-Shirts</a>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleClick("Pune");
+                  }}
+                >
+                  Pune
+                </span>
               </li>
               <li>
-                <a href="#">New Arrivals</a>
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    handleClick("New Delhi");
+                  }}
+                >
+                  New Delhi
+                </span>
               </li>
             </ul>
           </div>
 
-          {/* Help Section */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Help</h3>
             <ul className="space-y-2 text-sm text-gray-300">
@@ -59,7 +100,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* About Section */}
           <div>
             <h3 className="text-lg font-semibold mb-4">About</h3>
             <ul className="space-y-2 text-sm text-gray-300">
@@ -81,7 +121,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social & Payment */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
             <div className="flex space-x-4 text-xl mb-6">
@@ -107,7 +146,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p className="mb-4 md:mb-0">
             © 2025 DesignDrip. All Rights Reserved.
