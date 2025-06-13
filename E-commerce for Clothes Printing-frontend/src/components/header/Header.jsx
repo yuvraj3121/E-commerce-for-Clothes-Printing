@@ -100,7 +100,7 @@ const Header = ({ cartCount }) => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                <div className="absolute right-0 mt-2 w-[210px] bg-white border border-gray-200 rounded-md shadow-lg z-50">
                   <Link
                     to="/orders"
                     onClick={() => setIsDropdownOpen(false)}
@@ -122,6 +122,15 @@ const Header = ({ cartCount }) => {
                       className="block px-4 py-2 text-gray-700 hover:bg-blue-100"
                     >
                       Apply as Vendor
+                    </Link>
+                  )}
+                  {user.role == "user" && (
+                    <Link
+                      to="/deliveryPartnerApplication"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2 text-gray-700 hover:bg-blue-100"
+                    >
+                      Apply as Delivery Partner
                     </Link>
                   )}
                   <button

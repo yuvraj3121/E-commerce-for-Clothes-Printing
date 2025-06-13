@@ -20,6 +20,7 @@ import VendorApplication from "./pages/VendorApplication";
 import VendorHome from "./vendorPages/vendorHome";
 import ChoicePage from "./pages/ChoicePage";
 import Stores from "./pages/stores";
+import DeliveryPartnerApplication from "./pages/DeliveryPartnerApplication";
 
 function App() {
   return (
@@ -43,6 +44,10 @@ function App() {
         <Route path="/vendorHome" element={<VendorHome />} />
         <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vendorApplication" element={<VendorApplication />} />
+        <Route
+          path="/deliveryPartnerApplication"
+          element={<DeliveryPartnerApplication />}
+        />
       </Routes>
     </div>
   );
