@@ -1,27 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  FiHome,
-  FiShoppingBag,
-  FiUsers,
-  FiSettings,
-  FiLogOut,
-  FiMenu,
-  FiX,
-} from "react-icons/fi";
-import { RiEBike2Line } from "react-icons/ri";
+import { FiHome, FiSettings, FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import { BsBoxSeam, BsShopWindow } from "react-icons/bs";
-import AdminDashboard from "./adminDashboard";
-import AdminProducts from "./adminProducts";
-import AdminOrders from "./adminOrders";
 import { AuthContext } from "../context/AuthContext";
-import AdminCustomers from "./adminCustomers";
-import AdminVendors from "./adminVendors";
-import AdminDeliveryPartners from "./adminDeliveryPartners";
+import axios from "axios";
+import DeliveryPartnerOrders from "./deliveryPartnerOrder";
 
-const AdminHome = () => {
+const DeliveryPartnerHome = () => {
   const { user, logout } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("orders");
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -38,21 +25,13 @@ const AdminHome = () => {
         transition-transform duration-300 ease-in-out z-40`}
       >
         <div className="p-4 flex items-center justify-center border-b border-blue-700">
-          <h1 className="text-xl font-bold">Admin Panel</h1>
+          <h1 className="text-xl font-bold">Delivery Partner Panel</h1>
         </div>
         <nav className="p-4">
           <ul className="space-y-2">
             {[
-              { icon: <FiHome />, label: "Dashboard", tab: "dashboard" },
               { icon: <BsBoxSeam />, label: "Orders", tab: "orders" },
-              { icon: <FiShoppingBag />, label: "Products", tab: "products" },
-              { icon: <FiUsers />, label: "Customers", tab: "customers" },
-              { icon: <BsShopWindow />, label: "Vendors", tab: "vendors" },
-              {
-                icon: <RiEBike2Line />,
-                label: "Delivery Partners",
-                tab: "deliveryPartners",
-              },
+              { icon: <FiSettings />, label: "Account", tab: "account" },
             ].map((item) => (
               <li key={item.tab}>
                 <button
@@ -85,23 +64,19 @@ const AdminHome = () => {
             <h2 className="text-xl font-semibold capitalize">{activeTab}</h2>
             <div className="flex items-center space-x-4">
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <span className="text-blue-800 font-medium">AD</span>
+                <span className="text-blue-800 font-medium">V</span>
               </div>
             </div>
           </div>
         </header>
 
         <main className="p-6">
-          {activeTab === "dashboard" && <AdminDashboard />}
-          {activeTab === "orders" && <AdminOrders />}
-          {activeTab === "products" && <AdminProducts />}
-          {activeTab === "customers" && <AdminCustomers />}
-          {activeTab === "vendors" && <AdminVendors />}
-          {activeTab === "deliveryPartners" && <AdminDeliveryPartners />}
+          {activeTab === "orders" && <DeliveryPartnerOrders />}
+          {/* {activeTab === "account" && <DeliveryPartnerAccount />} */}
         </main>
       </div>
     </div>
   );
 };
 
-export default AdminHome;
+export default DeliveryPartnerHome;

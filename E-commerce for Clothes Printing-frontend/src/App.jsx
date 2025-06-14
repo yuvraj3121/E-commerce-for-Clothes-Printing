@@ -21,6 +21,7 @@ import VendorHome from "./vendorPages/vendorHome";
 import ChoicePage from "./pages/ChoicePage";
 import Stores from "./pages/stores";
 import DeliveryPartnerApplication from "./pages/DeliveryPartnerApplication";
+import DeliveryPartnerHome from "./DeliveryPartnerPages/deliveryPartnerHome";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/orderDetails" element={<OrderDetails />} />
         <Route path="/adminHome" element={<AdminHome />} />
         <Route path="/vendorHome" element={<VendorHome />} />
+        <Route path="/deliveryPartnerHome" element={<DeliveryPartnerHome />} />
         <Route path="/choicePage" element={<ChoicePage />} />
         <Route path="/vendorApplication" element={<VendorApplication />} />
         <Route

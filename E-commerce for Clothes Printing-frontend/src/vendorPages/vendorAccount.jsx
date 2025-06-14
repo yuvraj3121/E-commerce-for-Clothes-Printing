@@ -13,8 +13,16 @@ const VendorAccount = ({ vendorId }) => {
   useEffect(() => {
     const fetchVendor = async () => {
       try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://designdrip-v1.onrender.com/api/user/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const userId = response.data.user._id;
         const res = await axios.get(
-          `https://designdrip-v1.onrender.com/api/vendor/vendorData/${vendorId}`
+          `https://designdrip-v1.onrender.com/api/vendor/vendorDataByUserId/${userId}`
         );
         setVendorDetails(res.data.vendor);
         const typeString = res.data.vendor.printingType.join(", ");

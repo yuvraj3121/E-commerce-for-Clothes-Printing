@@ -8,26 +8,8 @@ import axios from "axios";
 
 const VendorHome = () => {
   const { user, logout } = useContext(AuthContext);
-  const [vendorId, setVendorId] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("orders");
-  const [allOrders, setAllOrders] = useState(null);
-
-  useEffect(() => {
-    const fetchAllOrders = async () => {
-      try {
-        const res = await axios.get(
-          "https://designdrip-v1.onrender.com/api/order/allOrder"
-        );
-        setAllOrders(
-          res.data.orders.filter((order) => order.status !== "Pending")
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllOrders();
-  }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -91,9 +73,7 @@ const VendorHome = () => {
 
         <main className="p-6">
           {activeTab === "orders" && <VendorOrders />}
-          {activeTab === "account" && (
-            <VendorAccount vendorId={allOrders?.[0]?.vendor} />
-          )}
+          {activeTab === "account" && <VendorAccount />}
         </main>
       </div>
     </div>

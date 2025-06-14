@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FiShoppingBag } from "react-icons/fi";
-import VendorOrderdetails from "./vendorOrderDetails";
+import DeliveryPartnerOrderDetails from "./deliveryPartnerOrderDetails";
 
-const VendorOrders = () => {
+const DeliveryPartnerOrders = () => {
   const [allOrders, setAllOrders] = useState(null);
   const [viewDetails, setViewDetails] = useState(false);
   const [orderId, setOrderId] = useState(null);
@@ -19,14 +19,15 @@ const VendorOrders = () => {
         );
         const userId = response.data.user._id;
         const resData = await axios.get(
-          `https://designdrip-v1.onrender.com/api/vendor/vendorDataByUserId/${userId}`
+          `https://designdrip-v1.onrender.com/api/deliveryPartner/deliveryPartnerDataByUserId/${userId}`
         );
         const res = await axios.get(
           "https://designdrip-v1.onrender.com/api/order/allOrder"
         );
         setAllOrders(
           res.data.orders.filter(
-            (order) => order.vendor === resData.data.vendor._id
+            (order) =>
+              order.deliveryPartner === resData.data.deliveryPartner._id
           )
         );
       } catch (error) {
@@ -117,7 +118,7 @@ const VendorOrders = () => {
         </div>
       ) : (
         <div>
-          <VendorOrderdetails
+          <DeliveryPartnerOrderDetails
             orderId={orderId}
             setViewDetails={setViewDetails}
           />
@@ -127,4 +128,4 @@ const VendorOrders = () => {
   );
 };
 
-export default VendorOrders;
+export default DeliveryPartnerOrders;

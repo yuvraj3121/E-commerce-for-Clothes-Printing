@@ -87,7 +87,7 @@ const DeliveryPartnerApplication = () => {
 
     try {
       await axios.post(
-        `https://localhost:8000/api/deliveryPartner/registerDeliveryPartner/${user._id}`,
+        `https://designdrip-v1.onrender.com/api/deliveryPartner/registerDeliveryPartner/${user._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

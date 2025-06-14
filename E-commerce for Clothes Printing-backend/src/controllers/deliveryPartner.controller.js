@@ -167,6 +167,7 @@ const assignOrder = async (req, res) => {
       { status: "Shipped", deliveryPartner: deliveryPartnerId },
       { new: true }
     );
+    console.log("Updated Order:", updatedOrder);
 
     res.status(200).json({
       message: "Order assigned successfully.",

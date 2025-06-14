@@ -4,12 +4,14 @@ import { FaRupeeSign } from "react-icons/fa";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FiShoppingBag, FiUsers } from "react-icons/fi";
 import { BsShopWindow } from "react-icons/bs";
+import { RiEBike2Line } from "react-icons/ri";
 
 const AdminDashboard = () => {
   const [usersData, setUsersData] = useState(null);
   const [allProduct, setAllProduct] = useState([]);
   const [allOrders, setAllOrders] = useState([]);
   const [allVendors, setAllVendors] = useState([]);
+  const [allDeliveryPartners, setAllDeliveryPartners] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
@@ -70,6 +72,22 @@ const AdminDashboard = () => {
       }
     };
     fetchAllVendors();
+
+    const fetchAllDeliveryPartners = async () => {
+      try {
+        await axios
+          .get(
+            "https://designdrip-v1.onrender.com/api/deliveryPartner/AllDeliveryPartners"
+          )
+          .then((res) => {
+            setAllDeliveryPartners(res.data);
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllDeliveryPartners();
   }, []);
 
   console.log(allOrders);
@@ -105,11 +123,17 @@ const AdminDashboard = () => {
       icon: <BsShopWindow size={24} />,
       change: "+8%",
     },
+    {
+      title: "Delivery Partners",
+      value: allDeliveryPartners?.count || 0,
+      icon: <RiEBike2Line size={24} />,
+      change: "+8%",
+    },
   ];
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white p-6 rounded-xl shadow">
             <div className="flex justify-evenly items-start">

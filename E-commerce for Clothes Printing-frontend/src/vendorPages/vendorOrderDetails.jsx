@@ -11,6 +11,8 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
   const [orderStatus, setOrderStatus] = useState("Under Process");
   const [viewDesign, setViewDesign] = useState(false);
   const [productId, setProductId] = useState(null);
+  const [showDeliveryPartners, setShowDeliveryPartners] = useState(false);
+  const [allDeliveryPartners, setAllDeliveryPartners] = useState([]);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -29,22 +31,37 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
       }
     };
     fetchOrder();
-  }, [orderId, orderStatus]);
+  }, [orderId, orderStatus, showDeliveryPartners]);
 
-  const handleStatusChange = async (e) => {
-    const newStatus = e.target.value;
-    setOrderStatus(newStatus);
+  const handleFindDeliveryPartner = async () => {
+    setShowDeliveryPartners(true);
+    try {
+      const res = await axios.get(
+        "https://designdrip-v1.onrender.com/api/deliveryPartner/AllDeliveryPartners"
+      );
+      setAllDeliveryPartners(
+        res.data.deliveryPartners.filter(
+          (partner) =>
+            partner.status === "accepted" &&
+            (partner.address.city === deliveryAddress.city ||
+              partner.address.state === deliveryAddress.state)
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching delivery partners:", error);
+    }
+  };
 
+  const handleAssignDeliveryPartner = async (orderId, deliveryPartnerId) => {
     try {
       const res = await axios.patch(
-        `https://designdrip-v1.onrender.com/api/order/updateStatus/${orderId}`,
-        {
-          status: newStatus,
-        }
+        "https://designdrip-v1.onrender.com/api/deliveryPartner/assignOrder",
+        { orderId, deliveryPartnerId }
       );
-      console.log(res.data);
+      // console.log(res.data);
+      setShowDeliveryPartners(false);
     } catch (error) {
-      console.error("Error updating order status:", error);
+      console.log("Error Assigning", error);
     }
   };
 
@@ -80,17 +97,82 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
                 Status: {orderDetails.status}
               </div>
             )}
-            <select
-              name="orderStatus"
-              className="border px-2 py-1 rounded w-[200px] mr-2"
-              onChange={handleStatusChange}
-              value={orderStatus}
-            >
-              <option value="Under Process">Under Process</option>
-              <option value="Shipped">Shipped</option>
-              <option value="Delivered">Delivered</option>
-            </select>
+            {orderDetails?.status == "Under Process" ? (
+              <button
+                className="cursor-pointer mr-2 text-blue-400 hover:text-blue-700 p-2 hover:bg-blue-100 rounded-lg"
+                onClick={handleFindDeliveryPartner}
+              >
+                Assign Delivery Partner
+              </button>
+            ) : null}
           </div>
+          {showDeliveryPartners && (
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-[900px]">
+                <h2 className="text-xl font-bold mb-4">
+                  Assign Delivery Partner
+                </h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Delivery Partner ID
+                        </th>
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Full Name
+                        </th>
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          City
+                        </th>
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          State
+                        </th>
+                        <th className="px-6 py-3  text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {allDeliveryPartners?.map((partner) => (
+                        <tr key={partner._id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                            {partner._id}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {partner.fullName}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {partner.address.city}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {partner.address.state}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <button
+                              className="text-white hover:bg-blue-800 bg-blue-500 px-2 py-1"
+                              onClick={() =>
+                                handleAssignDeliveryPartner(
+                                  orderId,
+                                  partner._id
+                                )
+                              }
+                            >
+                              Assign
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button
+                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  onClick={() => setShowVendors(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-2 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-2 mr-2">
               <div className="bg-white text-left rounded-lg px-2 py-2 ">

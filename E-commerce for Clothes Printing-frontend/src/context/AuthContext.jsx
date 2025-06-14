@@ -51,6 +51,8 @@ export const AuthProvider = ({ children }) => {
         navigate("/adminHome");
       } else if (res.data.user.role === "vendor") {
         navigate("/vendorHome");
+      } else if (res.data.user.role === "deliveryPartner") {
+        navigate("/deliveryPartnerHome");
       } else {
         navigate("/");
       }
