@@ -76,12 +76,12 @@ const VendorProductDesign = ({ setViewDesign, productId }) => {
               Back
             </button>
           </div>
-          {/* <button
+          <button
             onClick={handleDownload}
             className="mt-4 p-2 bg-green-200 hover:text-green-900 hover:bg-green-300"
           >
             Download
-          </button> */}
+          </button>
         </div>
         <div className=" w-full p-2">
           {product?.printLocation?.includes("front") && (

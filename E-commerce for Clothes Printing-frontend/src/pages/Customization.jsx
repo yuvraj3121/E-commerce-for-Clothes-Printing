@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { toPng } from "html-to-image";
 import html2canvas from "html2canvas";
+import { ImSpinner } from "react-icons/im";
 import {
   DndContext,
   useDraggable,
@@ -13,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import Header from "../components/header/Header";
 
 const DraggableDiv = ({
   id,
@@ -119,6 +121,8 @@ const DraggableDiv = ({
 
 const Customization = () => {
   const [user, setUser] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
   const { selectedProduct } = useSelector((state) => state.product);
   let productData = selectedProduct;
 
@@ -230,7 +234,7 @@ const Customization = () => {
     }
   };
 
-  const hanldeFrontSave = async () => {
+  const handleFrontSave = async () => {
     if (frontDesignFile || frontText != "") {
       const previewFront = document.getElementById("mainFrontImg");
       const frontCanvas = await html2canvas(previewFront, { useCORS: true });
@@ -273,6 +277,8 @@ const Customization = () => {
     }
 
     const totalQuantity = sizes.reduce((acc, item) => acc + item.quantity, 0);
+
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("productName", productData.productName);
@@ -325,6 +331,8 @@ const Customization = () => {
     } catch (error) {
       console.log(error);
       alert("Error adding to cart or creating product.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -349,296 +357,342 @@ const Customization = () => {
   }, []);
 
   return (
-    <div className="cus-container">
-      <div className="cus-leftDiv">
-        <button onClick={() => navigate("/product")}>{"< "}Back</button>
-        <div className="frontImg" onClick={() => setSide("front")}>
-          <img src={selectedProduct.productImage[0].url} alt="T-shirt"></img>
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm">
+          <ImSpinner className="animate-spin text-blue-600 text-5xl" />
         </div>
-        <div className="backImg" onClick={() => setSide("back")}>
-          <img src={selectedProduct.productImage[1].url} alt="T-shirt"></img>
-        </div>
-      </div>
-      <div className="cus-rightDiv">
-        <div
-          className="preview-tools-wrapper"
-          style={{ display: side === "front" ? "flex" : "none" }}
-        >
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div ref={frontCanvasRef} id="mainFrontImg" className="mainImgDiv">
+      )}
+      <div className={`${isLoading ? "blur-sm pointer-events-none" : ""}`}>
+        <Header />
+        <div className="cus-container">
+          <div className="cus-leftDiv">
+            <button onClick={() => navigate("/product")}>{"< "}Back</button>
+            <div className="frontImg" onClick={() => setSide("front")}>
               <img
                 src={selectedProduct.productImage[0].url}
                 alt="T-shirt"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  zIndex: 0,
-                }}
-              />
-
-              <DraggableDiv
-                id="frontImage"
-                position={frontImagePosition}
-                setPosition={setFrontImagePosition}
-                content={frontDesign}
-                type="frontImage"
-                zoom={frontImageZoom}
-              />
-              <DraggableDiv
-                id="frontText"
-                position={frontTextPosition}
-                setPosition={setFrontTextPosition}
-                content={frontText}
-                type="frontText"
-                zoom={frontTextZoom}
-                fontStyle={frontFontStyle}
-                color={frontTextColor}
-              />
+              ></img>
             </div>
-            <button
-              onClick={hanldeFrontSave}
-              className="absolute top-[570px] left-[870px] p-2"
-            >
-              Save
-            </button>
-          </DndContext>
-          <div className="toolsDiv">
-            <h3>Tools</h3>
-            <div className="tools">
-              <div>
-                <label>Upload Design: </label>
-                <input
-                  ref={frontFileInputRef}
-                  className="designInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFrontDesignUpload}
-                />
-                {frontDesign && (
-                  <button
-                    onClick={() => {
-                      setFrontDesign(null);
-                      setFrontImagePosition({ x: 0, y: 0 });
-                      if (frontFileInputRef.current) {
-                        frontFileInputRef.current.value = "";
-                      }
-                    }}
-                  >
-                    Remove Design
-                  </button>
-                )}
-                <label>Zoom: </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="300"
-                  value={frontImageZoom}
-                  onChange={(e) => setFrontImageZoom(Number(e.target.value))}
-                />
-              </div>
-              <div>
-                <label>Text: </label>
-                <input
-                  type="text"
-                  placeholder="Enter text"
-                  className="textInput"
-                  value={frontText}
-                  onChange={(e) => setFrontText(e.target.value)}
-                />
-                {frontText && (
-                  <button onClick={() => setFrontText("")}>Remove Text</button>
-                )}
-                <label>Font Size: </label>
-                <input
-                  type="range"
-                  min="10"
-                  max="60"
-                  value={frontTextZoom}
-                  onChange={(e) => setFrontTextZoom(Number(e.target.value))}
-                />
-                <label>Font Style: </label>
-                <select
-                  value={frontFontStyle}
-                  onChange={(e) => setFrontFontStyle(e.target.value)}
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Verdana">Verdana</option>
-                </select>
-                <label>Text Color: </label>
-                <input
-                  className="colorInput"
-                  type="color"
-                  value={frontTextColor}
-                  onChange={(e) => setFrontTextColor(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="preview-tools-wrapper"
-          style={{ display: side === "back" ? "flex" : "none" }}
-        >
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div ref={backCanvasRef} id="mainBackImg" className="mainImgDiv">
+            <div className="backImg" onClick={() => setSide("back")}>
               <img
                 src={selectedProduct.productImage[1].url}
                 alt="T-shirt"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  zIndex: 0,
-                }}
-              />
-              <DraggableDiv
-                id="backImage"
-                position={backImagePosition}
-                setPosition={setBackImagePosition}
-                content={backDesign}
-                type="backImage"
-                zoom={backImageZoom}
-              />
-              <DraggableDiv
-                id="backText"
-                position={backTextPosition}
-                setPosition={setBackTextPosition}
-                content={backText}
-                type="backText"
-                zoom={backTextZoom}
-                fontStyle={backFontStyle}
-                color={backTextColor}
-              />
+              ></img>
             </div>
-            <button
-              onClick={handleBackSave}
-              className="absolute top-[570px] left-[870px] p-2"
+          </div>
+          <div className="cus-rightDiv">
+            <div
+              className="preview-tools-wrapper"
+              style={{ display: side === "front" ? "flex" : "none" }}
             >
-              Save
-            </button>
-          </DndContext>
-          <div className="toolsDiv">
-            <h3>Tools</h3>
-            <div className="tools">
-              <div>
-                <label>Upload Design: </label>
-                <input
-                  ref={backFileInputRef}
-                  className="designInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBackDesignUpload}
-                />
-                {backDesign && (
-                  <button
-                    onClick={() => {
-                      setBackDesign(null);
-                      setBackImagePosition({ x: 0, y: 0 });
-                      if (backFileInputRef.current) {
-                        backFileInputRef.current.value = "";
-                      }
-                    }}
+              <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+                <div className="flex gap-2">
+                  <div
+                    ref={frontCanvasRef}
+                    id="mainFrontImg"
+                    className="mainImgDiv"
                   >
-                    Remove Design
-                  </button>
-                )}
-                <label>Zoom: </label>
-                <input
-                  type="range"
-                  min="50"
-                  max="300"
-                  value={backImageZoom}
-                  onChange={(e) => setBackImageZoom(Number(e.target.value))}
-                />
+                    <img
+                      src={selectedProduct.productImage[0].url}
+                      alt="T-shirt"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 0,
+                      }}
+                    />
+
+                    <DraggableDiv
+                      id="frontImage"
+                      position={frontImagePosition}
+                      setPosition={setFrontImagePosition}
+                      content={frontDesign}
+                      type="frontImage"
+                      zoom={frontImageZoom}
+                    />
+                    <DraggableDiv
+                      id="frontText"
+                      position={frontTextPosition}
+                      setPosition={setFrontTextPosition}
+                      content={frontText}
+                      type="frontText"
+                      zoom={frontTextZoom}
+                      fontStyle={frontFontStyle}
+                      color={frontTextColor}
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      onClick={handleFrontSave}
+                      className=" bg-blue-300 px-2 py-1 p-2 h-[40px]"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </DndContext>
+              <div className="toolsDiv">
+                <h3>Tools</h3>
+                <div className="tools">
+                  <div>
+                    <label>Upload Design: </label>
+                    <input
+                      ref={frontFileInputRef}
+                      className="designInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFrontDesignUpload}
+                    />
+                    {frontDesign && (
+                      <button
+                        className="px-2 py-1 bg-red-300 hover:bg-red-500"
+                        onClick={() => {
+                          setFrontDesign(null);
+                          setFrontImagePosition({ x: 0, y: 0 });
+                          if (frontFileInputRef.current) {
+                            frontFileInputRef.current.value = "";
+                          }
+                        }}
+                      >
+                        Remove Design
+                      </button>
+                    )}
+                    <label>Zoom: </label>
+                    <input
+                      type="range"
+                      min="50"
+                      max="300"
+                      value={frontImageZoom}
+                      onChange={(e) =>
+                        setFrontImageZoom(Number(e.target.value))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label>Text: </label>
+                    <input
+                      type="text"
+                      placeholder="Enter text"
+                      className="textInput"
+                      value={frontText}
+                      onChange={(e) => setFrontText(e.target.value)}
+                    />
+                    {frontText && (
+                      <button
+                        className="px-2 py-1 bg-red-300 hover:bg-red-500"
+                        onClick={() => setFrontText("")}
+                      >
+                        Remove Text
+                      </button>
+                    )}
+                    <label>Font Size: </label>
+                    <input
+                      type="range"
+                      min="10"
+                      max="60"
+                      value={frontTextZoom}
+                      onChange={(e) => setFrontTextZoom(Number(e.target.value))}
+                    />
+                    <label>Font Style: </label>
+                    <select
+                      value={frontFontStyle}
+                      onChange={(e) => setFrontFontStyle(e.target.value)}
+                    >
+                      <option value="Arial">Arial</option>
+                      <option value="Courier New">Courier New</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                      <option value="Verdana">Verdana</option>
+                    </select>
+                    <label>Text Color: </label>
+                    <input
+                      className="colorInput"
+                      type="color"
+                      value={frontTextColor}
+                      onChange={(e) => setFrontTextColor(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label>Text: </label>
-                <input
-                  type="text"
-                  placeholder="Enter text"
-                  className="textInput"
-                  value={backText}
-                  onChange={(e) => setBackText(e.target.value)}
-                />
-                {backText && (
-                  <button onClick={() => setBackText("")}>Remove Text</button>
-                )}
-                <label>Font Size: </label>
-                <input
-                  type="range"
-                  min="10"
-                  max="60"
-                  value={backTextZoom}
-                  onChange={(e) => setBackTextZoom(Number(e.target.value))}
-                />
-                <label>Font Style: </label>
-                <select
-                  value={backFontStyle}
-                  onChange={(e) => setBackFontStyle(e.target.value)}
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Courier New">Courier New</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                  <option value="Verdana">Verdana</option>
-                </select>
-                <label>Text Color: </label>
-                <input
-                  className="colorInput"
-                  type="color"
-                  value={backTextColor}
-                  onChange={(e) => setBackTextColor(e.target.value)}
-                />
+            </div>
+
+            <div
+              className="preview-tools-wrapper"
+              style={{ display: side === "back" ? "flex" : "none" }}
+            >
+              <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+                <div className="flex gap-2">
+                  <div
+                    ref={backCanvasRef}
+                    id="mainBackImg"
+                    className="mainImgDiv"
+                  >
+                    <img
+                      src={selectedProduct.productImage[1].url}
+                      alt="T-shirt"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 0,
+                      }}
+                    />
+                    <DraggableDiv
+                      id="backImage"
+                      position={backImagePosition}
+                      setPosition={setBackImagePosition}
+                      content={backDesign}
+                      type="backImage"
+                      zoom={backImageZoom}
+                    />
+                    <DraggableDiv
+                      id="backText"
+                      position={backTextPosition}
+                      setPosition={setBackTextPosition}
+                      content={backText}
+                      type="backText"
+                      zoom={backTextZoom}
+                      fontStyle={backFontStyle}
+                      color={backTextColor}
+                    />
+                  </div>
+                  <div className="flex items-end ">
+                    <button
+                      onClick={handleBackSave}
+                      className=" bg-blue-300 px-2 py-1 p-2 h-[40px]"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </DndContext>
+              <div className="toolsDiv">
+                <h3>Tools</h3>
+                <div className="tools">
+                  <div>
+                    <label>Upload Design: </label>
+                    <input
+                      ref={backFileInputRef}
+                      className="designInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBackDesignUpload}
+                    />
+                    {backDesign && (
+                      <button
+                        className="px-2 py-1 bg-red-300 hover:bg-red-500"
+                        onClick={() => {
+                          setBackDesign(null);
+                          setBackImagePosition({ x: 0, y: 0 });
+                          if (backFileInputRef.current) {
+                            backFileInputRef.current.value = "";
+                          }
+                        }}
+                      >
+                        Remove Design
+                      </button>
+                    )}
+                    <label>Zoom: </label>
+                    <input
+                      type="range"
+                      min="50"
+                      max="300"
+                      value={backImageZoom}
+                      onChange={(e) => setBackImageZoom(Number(e.target.value))}
+                    />
+                  </div>
+                  <div>
+                    <label>Text: </label>
+                    <input
+                      type="text"
+                      placeholder="Enter text"
+                      className="textInput"
+                      value={backText}
+                      onChange={(e) => setBackText(e.target.value)}
+                    />
+                    {backText && (
+                      <button
+                        className="px-2 py-1 bg-red-300 hover:bg-red-500"
+                        onClick={() => setBackText("")}
+                      >
+                        Remove Text
+                      </button>
+                    )}
+                    <label>Font Size: </label>
+                    <input
+                      type="range"
+                      min="10"
+                      max="60"
+                      value={backTextZoom}
+                      onChange={(e) => setBackTextZoom(Number(e.target.value))}
+                    />
+                    <label>Font Style: </label>
+                    <select
+                      value={backFontStyle}
+                      onChange={(e) => setBackFontStyle(e.target.value)}
+                    >
+                      <option value="Arial">Arial</option>
+                      <option value="Courier New">Courier New</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                      <option value="Verdana">Verdana</option>
+                    </select>
+                    <label>Text Color: </label>
+                    <input
+                      className="colorInput"
+                      type="color"
+                      value={backTextColor}
+                      onChange={(e) => setBackTextColor(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          <div className="centerDiv ">
+            <div style={{ marginBottom: "10px" }}>
+              <label>Color: </label>
+              <select value={color} onChange={(e) => setColor(e.target.value)}>
+                <option value="">Select</option>
+                <option value="white">White</option>
+                <option value="black">Black</option>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+              </select>
+            </div>
+            <div
+              className="productSizes flex gap-2"
+              style={{ marginBottom: "33px" }}
+            >
+              {sizes.map((item, index) => (
+                <label key={item.size}>
+                  {item.size} :{" "}
+                  <input
+                    className="w-[50px] bg-gray-200"
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleSizeChange(index, parseInt(e.target.value) || 0)
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            <button className="bg-blue-300 p-1" onClick={handleAddToCart}>
+              Add to cart
+            </button>
+          </div>
         </div>
       </div>
-      <div className="centerDiv ">
-        <div style={{ marginBottom: "10px" }}>
-          <label>Color: </label>
-          <select value={color} onChange={(e) => setColor(e.target.value)}>
-            <option value="">Select</option>
-            <option value="white">White</option>
-            <option value="black">Black</option>
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-          </select>
-        </div>
-        <div
-          className="productSizes flex gap-2"
-          style={{ marginBottom: "33px" }}
-        >
-          {sizes.map((item, index) => (
-            <label key={item.size}>
-              {item.size} :{" "}
-              <input
-                className="w-[50px] bg-gray-200"
-                type="number"
-                value={item.quantity}
-                onChange={(e) =>
-                  handleSizeChange(index, parseInt(e.target.value) || 0)
-                }
-              />
-            </label>
-          ))}
-        </div>
-        <button className="bg-blue-300 p-1" onClick={handleAddToCart}>
-          Add to cart
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 

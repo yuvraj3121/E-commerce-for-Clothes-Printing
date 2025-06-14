@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthContext } from "../context/AuthContext";
+import { ImSpinner } from "react-icons/im";
 import axios from "axios";
 
 const OrderReview = () => {
@@ -10,6 +11,7 @@ const OrderReview = () => {
   const { userDetails } = useSelector((state) => state.shippingDetails);
   const { totalAmount } = useSelector((state) => state.cart);
   const [cartItems, setCartItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -63,43 +65,59 @@ const OrderReview = () => {
         name: "Design Drip",
         description: "Test transaction",
         order_id: data.order.id,
+
         handler: async function (response) {
-          console.log("Payment Response:", response);
-          const { data: verifiedPayment } = await axios.post(
-            "https://designdrip-v1.onrender.com/api/payment/verifyPayment",
-            {
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-              userId: user._id,
-            }
-          );
+          setIsLoading(true);
+          try {
+            const { data: verifiedPayment } = await axios.post(
+              "https://designdrip-v1.onrender.com/api/payment/verifyPayment",
+              {
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+                userId: user._id,
+              }
+            );
 
-          const productIds = cartItems.map((item) => item._id);
-          const res = await axios.post(
-            "https://designdrip-v1.onrender.com/api/order/createOrder",
-            {
-              customerId: user._id,
-              product: productIds,
-              deliveryAddress: userDetails,
-              payment: verifiedPayment.payment._id,
-            }
-          );
+            const productIds = cartItems.map((item) => item._id);
+            const res = await axios.post(
+              "https://designdrip-v1.onrender.com/api/order/createOrder",
+              {
+                customerId: user._id,
+                product: productIds,
+                deliveryAddress: userDetails,
+                payment: verifiedPayment.payment._id,
+              }
+            );
 
-          const { data: paymentDetails } = await axios.patch(
-            `https://designdrip-v1.onrender.com/api/payment/updatePaymentMethod`,
-            {
-              id: verifiedPayment.payment._id,
-              paymentId: response.razorpay_payment_id,
-              orderId: res.data.order._id,
-            }
-          );
-          console.log("Payment details :", paymentDetails);
+            await axios.patch(
+              "https://designdrip-v1.onrender.com/api/payment/updatePaymentMethod",
+              {
+                id: verifiedPayment.payment._id,
+                paymentId: response.razorpay_payment_id,
+                orderId: res.data.order._id,
+              }
+            );
 
-          await axios.delete(
-            `https://designdrip-v1.onrender.com/api/cart/deleteUserCart/${user._id}`
-          );
-          window.location.href = "/";
+            await axios.delete(
+              `https://designdrip-v1.onrender.com/api/cart/deleteUserCart/${user._id}`
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            window.location.href = "/";
+          } catch (err) {
+            setIsLoading(false);
+            console.error("Post-payment error:", err);
+            alert("Something went wrong after payment.");
+          }
+        },
+
+        modal: {
+          ondismiss: function () {
+            console.log("Razorpay popup closed by user");
+            setIsLoading(false); // Reset loader if user exits payment
+          },
         },
       };
 
@@ -107,6 +125,7 @@ const OrderReview = () => {
       razorpay.open();
     } catch (error) {
       console.error("Payment Error:", error);
+      setIsLoading(false);
       alert("Payment failed.");
     }
   };
@@ -116,108 +135,119 @@ const OrderReview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 flex-col">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={handleBack}
-            className="text-blue-600 hover:bg-blue-100 hover:text-blue-800 font-medium"
-          >
-            ← Back to Shipping
-          </button>
-          <h2 className="text-2xl font-semibold">Order Review</h2>
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm">
+          <ImSpinner className="animate-spin text-blue-600 text-5xl" />
         </div>
-
-        <div className="mb-6 bg-gray-100 p-4 text-left">
-          <h3 className="text-xl font-semibold mb-4">Shipping Details</h3>
-          <div className="grid gap-2">
-            <div className="flex gap-2">
-              <strong className="w-32">Name:</strong>
-              <span>{userDetails?.fullName}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">Email:</strong>
-              <span>{userDetails?.email}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">Phone:</strong>
-              <span>{userDetails?.phone}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">Address:</strong>
-              <span>{userDetails?.address}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">City:</strong>
-              <span>{userDetails?.city}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">State:</strong>
-              <span>{userDetails?.state}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">Zip Code:</strong>
-              <span>{userDetails?.zip}</span>
-            </div>
-            <div className="flex gap-2">
-              <strong className="w-32">Country:</strong>
-              <span>{userDetails?.country}</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
-          <ul className="space-y-4">
-            {cartItems?.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"
+      )}
+      <div className={`${isLoading ? "blur-sm pointer-events-none" : ""}`}>
+        <div className="min-h-screen bg-gray-50 p-6">
+          <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6 flex-col">
+            <div className="flex items-center justify-between mb-6">
+              <button
+                onClick={handleBack}
+                className="text-blue-600 hover:bg-blue-100 hover:text-blue-800 font-medium"
               >
-                <img
-                  src={item.productImage[0].url}
-                  alt={item.productName}
-                  className="w-32 h-32 object-contain rounded"
-                />
-                <div className="flex-1">
-                  <h3 className="font-medium text-lg mb-1">
-                    {item.productName}
-                  </h3>
-                  <p className="text-sm">Color: {item.color}</p>
-                  {item.sizes.map((size) => (
-                    <p key={size.size} className="text-sm">
-                      {size.size}: {size.quantity}
-                    </p>
-                  ))}
-                  <p className="text-sm">Quantity: {item.quantity}</p>
-                  <p className="text-sm font-semibold">Price: ₹{item.price}</p>
+                ← Back to Shipping
+              </button>
+              <h2 className="text-2xl font-semibold">Order Review</h2>
+            </div>
+
+            <div className="mb-6 bg-gray-100 p-4 text-left">
+              <h3 className="text-xl font-semibold mb-4">Shipping Details</h3>
+              <div className="grid gap-2">
+                <div className="flex gap-2">
+                  <strong className="w-32">Name:</strong>
+                  <span>{userDetails?.fullName}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">Email:</strong>
+                  <span>{userDetails?.email}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">Phone:</strong>
+                  <span>{userDetails?.phone}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">Address:</strong>
+                  <span>{userDetails?.address}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">City:</strong>
+                  <span>{userDetails?.city}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">State:</strong>
+                  <span>{userDetails?.state}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">Zip Code:</strong>
+                  <span>{userDetails?.zip}</span>
+                </div>
+                <div className="flex gap-2">
+                  <strong className="w-32">Country:</strong>
+                  <span>{userDetails?.country}</span>
                 </div>
               </div>
-            ))}
-          </ul>
-          <div className="w-full md:w-1/3 border border-gray-200 rounded p-5 h-fit ml-[290px]">
-            <div className="flex justify-between mb-2">
-              <span>Subtotal</span>
-              <span>₹{totalAmount}</span>
             </div>
-            <div className="flex justify-between mb-2">
-              <span>Shipping</span>
-              <span>FREE</span>
+
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+              <ul className="space-y-4">
+                {cartItems?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex flex-col md:flex-row gap-4 border border-gray-200 rounded p-4 mb-5"
+                  >
+                    <img
+                      src={item.productImage[0].url}
+                      alt={item.productName}
+                      className="w-32 h-32 object-contain rounded"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-medium text-lg mb-1">
+                        {item.productName}
+                      </h3>
+                      <p className="text-sm">Color: {item.color}</p>
+                      {item.sizes.map((size) => (
+                        <p key={size.size} className="text-sm">
+                          {size.size}: {size.quantity}
+                        </p>
+                      ))}
+                      <p className="text-sm">Quantity: {item.quantity}</p>
+                      <p className="text-sm font-semibold">
+                        Price: ₹{item.price}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </ul>
+              <div className="w-full md:w-1/3 border border-gray-200 rounded p-5 h-fit ml-[290px]">
+                <div className="flex justify-between mb-2">
+                  <span>Subtotal</span>
+                  <span>₹{totalAmount}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span>Shipping</span>
+                  <span>FREE</span>
+                </div>
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span>₹{totalAmount}</span>
+                </div>
+                <button
+                  onClick={handlePlaceOrder}
+                  className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
+                >
+                  Proceed to Pay
+                </button>
+              </div>
             </div>
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total</span>
-              <span>₹{totalAmount}</span>
-            </div>
-            <button
-              onClick={handlePlaceOrder}
-              className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
-            >
-              Proceed to Pay
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

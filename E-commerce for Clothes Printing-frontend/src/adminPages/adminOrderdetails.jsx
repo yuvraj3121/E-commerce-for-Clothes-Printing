@@ -10,6 +10,7 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
   const [showVendors, setShowVendors] = useState(false);
   const [allVendors, setAllVendors] = useState([]);
   const [status, setStatus] = useState(null);
+  const [vendorId, setVendorId] = useState(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -23,13 +24,16 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
         setDeliveryAddress(res.data.order.deliveryAddress || {});
         setPaymentDetails(res.data.order.payment || {});
         setStatus(res.data.order.status);
+        if (res.data.order.vendor) {
+          setVendorId(res.data.order.vendor);
+        }
         console.log(res.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, showVendors]);
 
   console.log(orderDetails);
 
@@ -58,7 +62,7 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
         "https://designdrip-v1.onrender.com/api/vendor/assignOrder",
         { orderId, vendorId }
       );
-      // console.log(res.data);
+      console.log(res.data);
       setShowVendors(false);
     } catch (error) {
       console.log("Error Assigning", error);
@@ -104,7 +108,11 @@ const AdminOrderdetails = ({ orderId, setViewDetails }) => {
           >
             Assign Vendor
           </button>
-        ) : null}
+        ) : (
+          <div className="mr-2 px-2 py-1 bg-blue-200 rounded-md flex items-center">
+            Assigned to vendor {vendorId}
+          </div>
+        )}
       </div>
       {showVendors && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">

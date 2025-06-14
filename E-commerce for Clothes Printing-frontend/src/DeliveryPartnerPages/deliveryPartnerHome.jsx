@@ -4,6 +4,7 @@ import { BsBoxSeam, BsShopWindow } from "react-icons/bs";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import DeliveryPartnerOrders from "./deliveryPartnerOrder";
+import DeliveryPartnerAccount from "./deliveryPartnerAccount";
 
 const DeliveryPartnerHome = () => {
   const { user, logout } = useContext(AuthContext);
@@ -72,7 +73,7 @@ const DeliveryPartnerHome = () => {
 
         <main className="p-6">
           {activeTab === "orders" && <DeliveryPartnerOrders />}
-          {/* {activeTab === "account" && <DeliveryPartnerAccount />} */}
+          {activeTab === "account" && <DeliveryPartnerAccount />}
         </main>
       </div>
     </div>

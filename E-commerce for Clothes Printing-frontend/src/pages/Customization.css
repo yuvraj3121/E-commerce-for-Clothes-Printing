@@ -164,13 +164,14 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 .centerDiv {
+  /* background-color: blueviolet; */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   position: absolute;
-  left: 330px;
-  top: 630px;
+  left: 320px;
+  top: 700px;
   gap: 20px;
   /* background-color: #007bff; */
 }

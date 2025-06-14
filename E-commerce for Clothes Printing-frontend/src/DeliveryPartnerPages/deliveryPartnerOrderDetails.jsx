@@ -8,6 +8,8 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
   const [deliveryAddress, setDeliveryAddress] = useState(null);
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [orderStatus, setOrderStatus] = useState("Under Process");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otp, setOtp] = useState("");
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -26,20 +28,21 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
       }
     };
     fetchOrder();
-  }, [orderId, orderStatus]);
+  }, [orderId, orderStatus, showOtpInput]);
 
-  const handleStatusChange = async (e) => {
-    const newStatus = e.target.value;
-    setOrderStatus(newStatus);
+  const handleOTP = async (e) => {
+    e.preventDefault();
 
     try {
       const res = await axios.patch(
         `https://designdrip-v1.onrender.com/api/order/updateStatus/${orderId}`,
         {
-          status: newStatus,
+          status: "Delivered",
         }
       );
       console.log(res.data);
+      alert("OTP verified successfully.");
+      setShowOtpInput(false);
     } catch (error) {
       console.error("Error updating order status:", error);
     }
@@ -76,17 +79,45 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
               Status: {orderDetails.status}
             </div>
           )}
-          <select
-            name="orderStatus"
-            className="border px-2 py-1 rounded w-[200px] mr-2"
-            onChange={handleStatusChange}
-            value={orderStatus}
-          >
-            <option value="Under Process">Under Process</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-          </select>
+          {orderDetails?.status == "Shipped" ? (
+            <button
+              className="py-2 px-4 bg-green-300 hover:bg-green-500 mr-2"
+              onClick={() => setShowOtpInput(true)}
+            >
+              Send OTP
+            </button>
+          ) : null}
         </div>
+        {showOtpInput && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+              <h2 className="text-xl font-bold mb-4">
+                Enter OTP to Confirm Delivery
+              </h2>
+              <div className="flex flex-col gap-2">
+                <label className="font-bold">Enter OTP:</label>
+                <input
+                  type="text"
+                  className="border px-2 py-1 rounded"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                />
+              </div>
+              <button
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+                onClick={handleOTP}
+              >
+                Confirm
+              </button>
+              <button
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                onClick={() => setShowOtpInput(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
         <div className="flex flex-col gap-2 w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mb-2 mr-2">
             <div className="bg-white text-left rounded-lg px-2 py-2 ">
@@ -100,10 +131,12 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
               <p>FullName : {deliveryAddress?.fullName}</p>
               <p>Email : {deliveryAddress?.email}</p>
               <p>Phone no. : {deliveryAddress?.phone}</p>
-              <p>Address : {deliveryAddress?.address}</p>
-              <p>City : {deliveryAddress?.city}</p>
-              <p>State : {deliveryAddress?.state}</p>
-              <p>Zip : {deliveryAddress?.zip}</p>
+              <p>
+                Address : {deliveryAddress?.address}, {deliveryAddress?.city},{" "}
+                {deliveryAddress?.state} {"("}
+                {deliveryAddress?.zip}
+                {")"}
+              </p>
             </div>
             <div className="bg-white text-left rounded-lg px-2 py-2  ml-2">
               <h2 className="font-bold text-lg mb-1">Payment Details</h2>
@@ -135,7 +168,7 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
                       </p>
                     ))}
                   </div>
-                  {product.printLocation.length != 0 && (
+                  {/* {product.printLocation.length != 0 && (
                     <span
                       className="mt-2 text-blue-500 hover:text-blue-800 cursor-pointer"
                       onClick={() => {
@@ -145,7 +178,7 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
                     >
                       view design
                     </span>
-                  )}
+                  )} */}
                 </div>
               ))}
             </div>

@@ -13,6 +13,7 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
   const [productId, setProductId] = useState(null);
   const [showDeliveryPartners, setShowDeliveryPartners] = useState(false);
   const [allDeliveryPartners, setAllDeliveryPartners] = useState([]);
+  const [deliveryPartnerId, setDeliveryPartnerId] = useState(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -20,12 +21,16 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
         const res = await axios.get(
           `https://designdrip-v1.onrender.com/api/order/orderDetails/${orderId}`
         );
+        console.log(res.data);
         setOrderDetails(res.data.order || {});
         setCustomerDetails(res.data.order.customer || {});
         setProductDetails(res.data.order.product || {});
         setDeliveryAddress(res.data.order.deliveryAddress || {});
         setPaymentDetails(res.data.order.payment || {});
         setOrderStatus(res.data.order.status);
+        if (res.data.order.deliveryPartner) {
+          setDeliveryPartnerId(res.data.order.deliveryPartner);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -54,11 +59,15 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
 
   const handleAssignDeliveryPartner = async (orderId, deliveryPartnerId) => {
     try {
+      // const res = await axios.patch(
+      //   "http://localhost:8000/api/deliveryPartner/assignOrder",
+      //   { orderId, deliveryPartnerId }
+      // );
       const res = await axios.patch(
         "https://designdrip-v1.onrender.com/api/deliveryPartner/assignOrder",
         { orderId, deliveryPartnerId }
       );
-      // console.log(res.data);
+      console.log(res.data);
       setShowDeliveryPartners(false);
     } catch (error) {
       console.log("Error Assigning", error);
@@ -104,7 +113,11 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
               >
                 Assign Delivery Partner
               </button>
-            ) : null}
+            ) : (
+              <div className="px-2 py-1 bg-blue-200 rounded-md flex items-center mr-2">
+                Assigned to delivery partner {deliveryPartnerId}
+              </div>
+            )}
           </div>
           {showDeliveryPartners && (
             <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
@@ -186,10 +199,12 @@ const VendorOrderdetails = ({ orderId, setViewDetails }) => {
                 <p>FullName : {deliveryAddress?.fullName}</p>
                 <p>Email : {deliveryAddress?.email}</p>
                 <p>Phone no. : {deliveryAddress?.phone}</p>
-                <p>Address : {deliveryAddress?.address}</p>
-                <p>City : {deliveryAddress?.city}</p>
-                <p>State : {deliveryAddress?.state}</p>
-                <p>Zip : {deliveryAddress?.zip}</p>
+                <p>
+                  Address : {deliveryAddress?.address}, {deliveryAddress?.city},{" "}
+                  {deliveryAddress?.state} {"("}
+                  {deliveryAddress?.zip}
+                  {")"}
+                </p>
               </div>
               <div className="bg-white text-left rounded-lg px-2 py-2  ml-2">
                 <h2 className="font-bold text-lg mb-1">Payment Details</h2>

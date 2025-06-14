@@ -6,6 +6,7 @@ import { incrementCartCount, addToCart } from "../features/cartSlice.js";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { TbPhotoEdit } from "react-icons/tb";
+import { ImSpinner } from "react-icons/im";
 import Header from "../components/header/Header.jsx";
 import axios from "axios";
 
@@ -30,6 +31,7 @@ const Product = () => {
   const [prev, setPrev] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   let productData = {
     id: Date.now(),
@@ -97,6 +99,8 @@ const Product = () => {
     if (isBackChecked && !backDesignPreview)
       return alert("Please upload back design");
 
+    setIsLoading(true);
+
     dispatch(incrementCartCount());
     dispatch(
       addToCart({
@@ -150,6 +154,8 @@ const Product = () => {
     } catch (error) {
       console.log(error);
       alert("Error adding to cart or creating product.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -175,202 +181,216 @@ const Product = () => {
 
   return (
     <>
-      <Header />
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm">
+          <ImSpinner className="animate-spin text-blue-600 text-5xl" />
+        </div>
+      )}
+      <div className={`${isLoading ? "blur-sm pointer-events-none" : ""}`}>
+        <Header />
 
-      <div className=" max-w-7xl mx-auto p-6 sm:p-8 bg-white rounded-2xl shadow-2xl font-sans">
-        <div className="flex flex-col md:flex-row gap-8 bg-gray-100 rounded-lg p-6">
-          <div
-            className="md:w-2/3 flex justify-center relative"
-            style={{ height: "500px" }}
-          >
-            <div className="h-full w-16 flex items-center justify-center absolute left-0 top-0 text-4xl text-gray-400 opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-              <IoIosArrowBack onClick={() => handleImgChangeClick("prev")} />
-            </div>
+        <div className=" max-w-7xl mx-auto p-6 sm:p-8 bg-white rounded-2xl shadow-2xl font-sans">
+          <div className="flex flex-col md:flex-row gap-8 bg-gray-100 rounded-lg p-6">
+            <div
+              className="md:w-2/3 flex justify-center relative"
+              style={{ height: "500px" }}
+            >
+              <div className="h-full w-16 flex items-center justify-center absolute left-0 top-0 text-4xl text-gray-400 opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                <IoIosArrowBack onClick={() => handleImgChangeClick("prev")} />
+              </div>
 
-            <img
-              src={
-                prev
-                  ? selectedProduct.productImage[0].url
-                  : selectedProduct.productImage[1].url
-              }
-              alt={selectedProduct.productName}
-              className="w-full h-full object-contain rounded-lg border border-gray-300"
-            />
-
-            <div className="h-full w-16 flex items-center justify-center absolute right-0 top-0 text-4xl text-gray-400 opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-              <IoIosArrowForward onClick={() => handleImgChangeClick("next")} />
-            </div>
-          </div>
-
-          <div className="md:w-1/3 space-y-6">
-            <h2 className="text-3xl font-semibold text-center text-gray-800">
-              {selectedProduct.productName}
-            </h2>
-
-            <div className="text-xl font-semibold text-gray-700">
-              <h3>Price: ₹{selectedProduct.price}</h3>
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold text-gray-700">
-                Color:
-              </label>
-              <select
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select</option>
-                {selectedProduct.colors.map((color) => (
-                  <option key={color} value={color}>
-                    {color}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold text-gray-700">
-                Quantity:
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={totalQuantity}
-                onChange={(e) => setTotalQuantity(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <img
+                src={
+                  prev
+                    ? selectedProduct.productImage[0].url
+                    : selectedProduct.productImage[1].url
+                }
+                alt={selectedProduct.productName}
+                className="w-full h-full object-contain rounded-lg border border-gray-300"
               />
-            </div>
 
-            <div>
-              <label className="block mb-3 font-semibold text-gray-700">
-                Print Location:
-              </label>
-              <div className="flex gap-4">
-                <div className="flex-1 bg-white p-4 rounded-md border border-gray-300">
-                  <label className="flex items-center gap-2 mb-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isFrontChecked}
-                      onChange={handleFrontCheckboxChange}
-                      className="w-5 h-5"
-                    />
-                    Front
-                  </label>
-                  {isFrontChecked && (
-                    <>
-                      <label className="block mb-2 font-semibold">
-                        Upload Design:
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFrontDesignUpload}
-                        className="w-full"
-                      />
-                      {frontDesignPreview && (
-                        <div className="mt-3">
-                          <h4 className="font-semibold mb-2 text-gray-700">
-                            Preview:
-                          </h4>
-                          <img
-                            src={frontDesignPreview}
-                            alt="Front Design Preview"
-                            className="w-full max-h-48 object-contain rounded-md border border-gray-300"
-                          />
-                          <button
-                            onClick={() => setFrontDesignPreview(null)}
-                            className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition"
-                          >
-                            Remove Design
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                <div className="flex-1 bg-white p-4 rounded-md border border-gray-300">
-                  <label className="flex items-center gap-2 mb-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isBackChecked}
-                      onChange={handleBackCheckboxChange}
-                      className="w-5 h-5"
-                    />
-                    Back
-                  </label>
-                  {isBackChecked && (
-                    <>
-                      <label className="block mb-2 font-semibold">
-                        Upload Design:
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleBackDesignUpload}
-                        className="w-full"
-                      />
-                      {backDesignPreview && (
-                        <div className="mt-3">
-                          <h4 className="font-semibold mb-2 text-gray-700">
-                            Preview:
-                          </h4>
-                          <img
-                            src={backDesignPreview}
-                            alt="Back Design Preview"
-                            className="w-full max-h-48 object-contain rounded-md border border-gray-300"
-                          />
-                          <button
-                            onClick={() => setBackDesignPreview(null)}
-                            className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition"
-                          >
-                            Remove Design
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+              <div className="h-full w-16 flex items-center justify-center absolute right-0 top-0 text-4xl text-gray-400 opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                <IoIosArrowForward
+                  onClick={() => handleImgChangeClick("next")}
+                />
               </div>
             </div>
 
-            <div>
-              <label className="block mb-2 font-semibold text-gray-700">
-                Size Quantities:
-              </label>
-              <div className="grid grid-cols-4 gap-4">
-                {sizes.map((item, index) => (
-                  <div key={item.size} className="flex flex-col items-center">
-                    <label className="mb-1 font-medium">{item.size}</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleSizeChange(index, Number(e.target.value))
-                      }
-                      className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+            <div className="md:w-1/3 space-y-6">
+              <h2 className="text-3xl font-semibold text-center text-gray-800">
+                {selectedProduct.productName}
+              </h2>
+
+              <div className="text-xl font-semibold text-gray-700">
+                <h3>Price: ₹{selectedProduct.price}</h3>
+              </div>
+
+              <div>
+                <label className="block mb-2 font-semibold text-gray-700">
+                  Color:
+                </label>
+                <select
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select</option>
+                  {selectedProduct.colors.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-2 font-semibold text-gray-700">
+                  Quantity:
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={totalQuantity}
+                  onChange={(e) => setTotalQuantity(Number(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-3 font-semibold text-gray-700">
+                  Print Location:
+                </label>
+                <div className="flex gap-4">
+                  <div className="flex-1 bg-white p-4 rounded-md border border-gray-300">
+                    <label className="flex items-center gap-2 mb-4 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isFrontChecked}
+                        onChange={handleFrontCheckboxChange}
+                        className="w-5 h-5"
+                      />
+                      Front
+                    </label>
+                    {isFrontChecked && (
+                      <>
+                        <label className="block mb-2 font-semibold">
+                          Upload Design:
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFrontDesignUpload}
+                          className="w-full"
+                        />
+                        {frontDesignPreview && (
+                          <div className="mt-3">
+                            <h4 className="font-semibold mb-2 text-gray-700">
+                              Preview:
+                            </h4>
+                            <img
+                              src={frontDesignPreview}
+                              alt="Front Design Preview"
+                              className="w-full max-h-48 object-contain rounded-md border border-gray-300"
+                            />
+                            <button
+                              onClick={() => setFrontDesignPreview(null)}
+                              className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition"
+                            >
+                              Remove Design
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
-                ))}
+
+                  <div className="flex-1 bg-white p-4 rounded-md border border-gray-300">
+                    <label className="flex items-center gap-2 mb-4 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isBackChecked}
+                        onChange={handleBackCheckboxChange}
+                        className="w-5 h-5"
+                      />
+                      Back
+                    </label>
+                    {isBackChecked && (
+                      <>
+                        <label className="block mb-2 font-semibold">
+                          Upload Design:
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleBackDesignUpload}
+                          className="w-full"
+                        />
+                        {backDesignPreview && (
+                          <div className="mt-3">
+                            <h4 className="font-semibold mb-2 text-gray-700">
+                              Preview:
+                            </h4>
+                            <img
+                              src={backDesignPreview}
+                              alt="Back Design Preview"
+                              className="w-full max-h-48 object-contain rounded-md border border-gray-300"
+                            />
+                            <button
+                              onClick={() => setBackDesignPreview(null)}
+                              className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition"
+                            >
+                              Remove Design
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
+
+              <div>
+                <label className="block mb-2 font-semibold text-gray-700">
+                  Size Quantities:
+                </label>
+                <div className="grid grid-cols-4 gap-4">
+                  {sizes.map((item, index) => (
+                    <div key={item.size} className="flex flex-col items-center">
+                      <label className="mb-1 font-medium">{item.size}</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleSizeChange(index, Number(e.target.value))
+                        }
+                        className="w-16 px-2 py-1 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate("/customization")}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition"
+              >
+                <TbPhotoEdit className="text-xl" />
+                Create your design
+              </button>
+
+              <button
+                onClick={handleAddToCart}
+                disabled={isLoading}
+                className={`w-full py-3 rounded-md font-semibold transition text-white ${
+                  isLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+              >
+                {isLoading ? "Adding..." : "Add To Cart"}
+              </button>
             </div>
-
-            <button
-              onClick={() => navigate("/customization")}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition"
-            >
-              <TbPhotoEdit className="text-xl" />
-              Create your design
-            </button>
-
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition"
-            >
-              Add To Cart
-            </button>
           </div>
         </div>
       </div>
