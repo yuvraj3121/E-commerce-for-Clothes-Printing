@@ -10,12 +10,13 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
   const [orderStatus, setOrderStatus] = useState("Under Process");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otp, setOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(
-          `https://designdrip-v1.onrender.com/api/order/orderDetails/${orderId}`
+          `https://designdrip-v1.onrender.com/api/order/orderDetails/${orderId}`,
         );
         setOrderDetails(res.data.order || {});
         setCustomerDetails(res.data.order.customer || {});
@@ -30,21 +31,32 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
     fetchOrder();
   }, [orderId, orderStatus, showOtpInput]);
 
+  const otpGenerator = () => {
+    setShowOtpInput(true);
+    const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedOtp(generatedOtp);
+    console.log("Generated OTP:", generatedOtp);
+  };
+
   const handleOTP = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.patch(
-        `https://designdrip-v1.onrender.com/api/order/updateStatus/${orderId}`,
-        {
-          status: "Delivered",
-        }
-      );
-      console.log(res.data);
-      alert("OTP verified successfully.");
-      setShowOtpInput(false);
-    } catch (error) {
-      console.error("Error updating order status:", error);
+    if (otp === generatedOtp) {
+      try {
+        const res = await axios.patch(
+          `https://designdrip-v1.onrender.com/api/order/updateStatus/${orderId}`,
+          {
+            status: "Delivered",
+          },
+        );
+        console.log(res.data);
+        alert("OTP verified successfully.");
+        setShowOtpInput(false);
+      } catch (error) {
+        console.error("Error updating order status:", error);
+      }
+    } else {
+      alert("Invalid OTP. Please try again.");
     }
   };
 
@@ -70,10 +82,10 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
                 orderDetails.status === "Delivered"
                   ? "bg-green-500"
                   : orderDetails.status === "Shipped"
-                  ? "bg-blue-500"
-                  : orderDetails.status === "Cancelled"
-                  ? "bg-red-500"
-                  : "bg-yellow-500"
+                    ? "bg-blue-500"
+                    : orderDetails.status === "Cancelled"
+                      ? "bg-red-500"
+                      : "bg-yellow-500"
               }`}
             >
               Status: {orderDetails.status}
@@ -82,7 +94,7 @@ const DeliveryPartnerOrderDetails = ({ orderId, setViewDetails }) => {
           {orderDetails?.status == "Shipped" ? (
             <button
               className="py-2 px-4 bg-green-300 hover:bg-green-500 mr-2"
-              onClick={() => setShowOtpInput(true)}
+              onClick={otpGenerator}
             >
               Send OTP
             </button>
